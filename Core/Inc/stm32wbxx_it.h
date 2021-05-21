@@ -28,7 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+ typedef void (* const PFV_I)(INT);
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -56,6 +56,7 @@ void SVC_Handler(void);
 void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
+void EXTI3_IRQHandler(void);
 void EXTI9_5_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
