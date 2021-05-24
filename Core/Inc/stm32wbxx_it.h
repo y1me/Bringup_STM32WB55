@@ -28,7 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
- typedef void (* const PFV_I)(INT);
+ typedef void (* const PFV_I)(int);
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
