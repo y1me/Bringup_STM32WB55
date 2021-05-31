@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32wbxx_it.h"
+#include "stddef.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -58,7 +59,19 @@
 /* External variables --------------------------------------------------------*/
 
 /* USER CODE BEGIN EV */
-static PFV_I pf;
+static PFV_EXTI pf_ext_int[]=
+		{
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL
+		};
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -204,19 +217,47 @@ void SysTick_Handler(void)
   */
 void EXTI3_IRQHandler(void)
 {
-  /* USER CODE BEGIN EXTI3_IRQn 0 */
+	/* USER CODE BEGIN EXTI3_IRQn 0 */
 
-  /* USER CODE END EXTI3_IRQn 0 */
-  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_3) != RESET)
-  {
-    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_3);
-    /* USER CODE BEGIN LL_EXTI_LINE_3 */
+	/* USER CODE END EXTI3_IRQn 0 */
+	if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_3) != RESET)
+	{
+		LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_3);
+		/* USER CODE BEGIN LL_EXTI_LINE_3 */
+		if (pf_ext_int[3]  != NULL)
+		{
+			(* pf_ext_int[3])();
+		}
 
-    /* USER CODE END LL_EXTI_LINE_3 */
-  }
-  /* USER CODE BEGIN EXTI3_IRQn 1 */
+		/* USER CODE END LL_EXTI_LINE_3 */
+	}
+	/* USER CODE BEGIN EXTI3_IRQn 1 */
 
-  /* USER CODE END EXTI3_IRQn 1 */
+	/* USER CODE END EXTI3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line4 interrupt.
+  */
+void EXTI4_IRQHandler(void)
+{
+	/* USER CODE BEGIN EXTI4_IRQn 0 */
+
+	/* USER CODE END EXTI4_IRQn 0 */
+	if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
+	{
+		LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
+
+		/* USER CODE BEGIN LL_EXTI_LINE_4 */
+		if (pf_ext_int[4]  != NULL)
+		{
+			(* pf_ext_int[4])();
+		}
+		/* USER CODE END LL_EXTI_LINE_4 */
+	}
+	/* USER CODE BEGIN EXTI4_IRQn 1 */
+
+	/* USER CODE END EXTI4_IRQn 1 */
 }
 
 /**
@@ -231,22 +272,51 @@ void EXTI9_5_IRQHandler(void)
   {
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_5);
     /* USER CODE BEGIN LL_EXTI_LINE_5 */
-
+    if (pf_ext_int[5]  != NULL)
+    		{
+    			(* pf_ext_int[5])();
+    		}
     /* USER CODE END LL_EXTI_LINE_5 */
   }
   if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_6) != RESET)
   {
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_6);
     /* USER CODE BEGIN LL_EXTI_LINE_6 */
-
+    if (pf_ext_int[6]  != NULL)
+    		{
+    			(* pf_ext_int[6])();
+    		}
     /* USER CODE END LL_EXTI_LINE_6 */
   }
   if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_7) != RESET)
   {
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_7);
     /* USER CODE BEGIN LL_EXTI_LINE_7 */
-
+    if (pf_ext_int[7]  != NULL)
+    		{
+    			(* pf_ext_int[7])();
+    		}
     /* USER CODE END LL_EXTI_LINE_7 */
+  }
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_8) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_8);
+    /* USER CODE BEGIN LL_EXTI_LINE_8 */
+    if (pf_ext_int[8]  != NULL)
+    		{
+    			(* pf_ext_int[8])();
+    		}
+    /* USER CODE END LL_EXTI_LINE_8 */
+  }
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_9) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_9);
+    /* USER CODE BEGIN LL_EXTI_LINE_9 */
+    if (pf_ext_int[9]  != NULL)
+    		{
+    			(* pf_ext_int[9])();
+    		}
+    /* USER CODE END LL_EXTI_LINE_9 */
   }
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 

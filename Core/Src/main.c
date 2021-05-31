@@ -159,7 +159,6 @@ void SystemClock_Config(void)
 
   /* Update CMSIS variable (which can be updated also through SystemCoreClockUpdate function) */
   LL_SetSystemCoreClock(64000000);
-  LL_RCC_ConfigMCO(LL_RCC_MCO1SOURCE_PLLCLK, LL_RCC_MCO1_DIV_1);
   LL_RCC_SetSMPSClockSource(LL_RCC_SMPS_CLKSOURCE_HSI);
   LL_RCC_SetSMPSPrescaler(LL_RCC_SMPS_DIV_1);
   LL_RCC_SetRFWKPClockSource(LL_RCC_RFWKP_CLKSOURCE_NONE);
