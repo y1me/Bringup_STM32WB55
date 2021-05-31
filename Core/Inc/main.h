@@ -28,7 +28,21 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32wbxx_hal.h"
+
+#include "stm32wbxx_ll_crs.h"
+#include "stm32wbxx_ll_rcc.h"
+#include "stm32wbxx_ll_bus.h"
+#include "stm32wbxx_ll_system.h"
+#include "stm32wbxx_ll_exti.h"
+#include "stm32wbxx_ll_cortex.h"
+#include "stm32wbxx_ll_utils.h"
+#include "stm32wbxx_ll_pwr.h"
+#include "stm32wbxx_ll_dma.h"
+#include "stm32wbxx_ll_gpio.h"
+
+#if defined(USE_FULL_ASSERT)
+#include "stm32_assert.h"
+#endif /* USE_FULL_ASSERT */
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -58,6 +72,26 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Sht_Pin LL_GPIO_PIN_13
+#define Sht_GPIO_Port GPIOC
+#define Led_Pin LL_GPIO_PIN_10
+#define Led_GPIO_Port GPIOA
+#define Prech_Pin LL_GPIO_PIN_15
+#define Prech_GPIO_Port GPIOA
+#define alim_Pin LL_GPIO_PIN_12
+#define alim_GPIO_Port GPIOC
+#ifndef NVIC_PRIORITYGROUP_0
+#define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
+                                                                 4 bits for subpriority */
+#define NVIC_PRIORITYGROUP_1         ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority,
+                                                                 3 bits for subpriority */
+#define NVIC_PRIORITYGROUP_2         ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority,
+                                                                 2 bits for subpriority */
+#define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
+                                                                 1 bit  for subpriority */
+#define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
+                                                                 0 bit  for subpriority */
+#endif
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
