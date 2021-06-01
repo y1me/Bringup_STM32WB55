@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32wbxx_it.h"
+#include "gpio.h"
 #include "stddef.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -66,12 +67,15 @@ static PFV_EXTI pf_ext_int[]=
 				NULL,
 				NULL,
 				NULL,
+				TOGGLE_GPIO_LED2,
 				NULL,
 				NULL,
 				NULL,
 				NULL,
 				NULL
 		};
+
+//pf_ext_int[5] = TOGGLE_GPIO_LED2;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -217,23 +221,23 @@ void SysTick_Handler(void)
   */
 void EXTI3_IRQHandler(void)
 {
-	/* USER CODE BEGIN EXTI3_IRQn 0 */
+  /* USER CODE BEGIN EXTI3_IRQn 0 */
 
-	/* USER CODE END EXTI3_IRQn 0 */
-	if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_3) != RESET)
-	{
-		LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_3);
-		/* USER CODE BEGIN LL_EXTI_LINE_3 */
+  /* USER CODE END EXTI3_IRQn 0 */
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_3) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_3);
+    /* USER CODE BEGIN LL_EXTI_LINE_3 */
 		if (pf_ext_int[3]  != NULL)
 		{
 			(* pf_ext_int[3])();
 		}
 
-		/* USER CODE END LL_EXTI_LINE_3 */
-	}
-	/* USER CODE BEGIN EXTI3_IRQn 1 */
+    /* USER CODE END LL_EXTI_LINE_3 */
+  }
+  /* USER CODE BEGIN EXTI3_IRQn 1 */
 
-	/* USER CODE END EXTI3_IRQn 1 */
+  /* USER CODE END EXTI3_IRQn 1 */
 }
 
 /**
@@ -241,23 +245,22 @@ void EXTI3_IRQHandler(void)
   */
 void EXTI4_IRQHandler(void)
 {
-	/* USER CODE BEGIN EXTI4_IRQn 0 */
+  /* USER CODE BEGIN EXTI4_IRQn 0 */
 
-	/* USER CODE END EXTI4_IRQn 0 */
-	if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
-	{
-		LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
-
-		/* USER CODE BEGIN LL_EXTI_LINE_4 */
+  /* USER CODE END EXTI4_IRQn 0 */
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
+    /* USER CODE BEGIN LL_EXTI_LINE_4 */
 		if (pf_ext_int[4]  != NULL)
 		{
 			(* pf_ext_int[4])();
 		}
-		/* USER CODE END LL_EXTI_LINE_4 */
-	}
-	/* USER CODE BEGIN EXTI4_IRQn 1 */
+    /* USER CODE END LL_EXTI_LINE_4 */
+  }
+  /* USER CODE BEGIN EXTI4_IRQn 1 */
 
-	/* USER CODE END EXTI4_IRQn 1 */
+  /* USER CODE END EXTI4_IRQn 1 */
 }
 
 /**

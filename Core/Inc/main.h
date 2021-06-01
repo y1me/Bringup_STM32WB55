@@ -72,14 +72,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Sht_Pin LL_GPIO_PIN_13
-#define Sht_GPIO_Port GPIOC
-#define Led_Pin LL_GPIO_PIN_10
-#define Led_GPIO_Port GPIOA
-#define Prech_Pin LL_GPIO_PIN_15
-#define Prech_GPIO_Port GPIOA
-#define alim_Pin LL_GPIO_PIN_12
-#define alim_GPIO_Port GPIOC
+#define LED2_Pin LL_GPIO_PIN_0
+#define LED2_GPIO_Port GPIOB
 #ifndef NVIC_PRIORITYGROUP_0
 #define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
                                                                  4 bits for subpriority */
