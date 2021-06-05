@@ -21,10 +21,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32wbxx_it.h"
-#include "gpio.h"
-#include "stddef.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "gpio.h"
+#include "stddef.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

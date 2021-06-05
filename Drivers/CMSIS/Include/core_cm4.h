@@ -31,8 +31,8 @@
 #ifndef __CORE_CM4_H_GENERIC
 #define __CORE_CM4_H_GENERIC
 
-#include <stdint.h>
-
+#include "stdint.h"
+#include "stm32wb55xx.h"
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -61,6 +61,8 @@
  */
 
 #include "cmsis_version.h"
+
+
 
 /* CMSIS CM4 definitions */
 #define __CM4_CMSIS_VERSION_MAIN  (__CM_CMSIS_VERSION_MAIN)              /*!< \deprecated [31:16] CMSIS HAL main version */

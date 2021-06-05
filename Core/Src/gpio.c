@@ -222,13 +222,13 @@ void MX_GPIO_Init(void)
 
 }
 
+/* USER CODE BEGIN 2 */
 void TOGGLE_GPIO_LED2(void)
 {
+	printf("Toggle GPIO PB0 \n");
+
 	LL_GPIO_TogglePin(GPIOB, LL_GPIO_PIN_0);
 }
-
-/* USER CODE BEGIN 2 */
-
 /* USER CODE END 2 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
