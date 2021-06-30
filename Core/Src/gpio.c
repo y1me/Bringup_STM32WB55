@@ -19,7 +19,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "gpio.h"
-
+#include <stdio.h>
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -46,7 +46,11 @@ void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
+
+  /**/
+  LL_GPIO_ResetOutputPin(TEST_PIN_GPIO_Port, TEST_PIN_Pin);
 
   /**/
   LL_GPIO_SetOutputPin(LED2_GPIO_Port, LED2_Pin);
@@ -205,6 +209,14 @@ void MX_GPIO_Init(void)
   LL_GPIO_SetPinMode(GPIOA, LL_GPIO_PIN_9, LL_GPIO_MODE_INPUT);
 
   /**/
+  GPIO_InitStruct.Pin = TEST_PIN_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(TEST_PIN_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
   GPIO_InitStruct.Pin = LED2_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
@@ -228,6 +240,13 @@ void TOGGLE_GPIO_LED2(void)
 	printf("Toggle GPIO PB0 \n");
 
 	LL_GPIO_TogglePin(GPIOB, LL_GPIO_PIN_0);
+}
+
+void TOGGLE_GPIO_TEST_PIN(void)
+{
+	//printf("Toggle GPIO PB0 \n");
+
+	LL_GPIO_TogglePin(GPIOC, LL_GPIO_PIN_4);
 }
 /* USER CODE END 2 */
 

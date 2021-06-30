@@ -72,6 +72,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define TEST_PIN_Pin LL_GPIO_PIN_4
+#define TEST_PIN_GPIO_Port GPIOC
 #define LED2_Pin LL_GPIO_PIN_0
 #define LED2_GPIO_Port GPIOB
 #ifndef NVIC_PRIORITYGROUP_0
