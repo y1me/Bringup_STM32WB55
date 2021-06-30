@@ -38,7 +38,7 @@ extern "C" {
 void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void TOGGLE_GPIO_LED2(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
