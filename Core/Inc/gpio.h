@@ -39,6 +39,7 @@ void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void TOGGLE_GPIO_LED2(void);
+void TOGGLE_GPIO_TEST_PIN(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

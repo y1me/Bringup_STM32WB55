@@ -32,6 +32,7 @@
 #define __CORE_CM4_H_GENERIC
 
 #include <stdint.h>
+#include "stm32wb55xx.h"
 
 #ifdef __cplusplus
  extern "C" {
@@ -41,10 +42,10 @@
   \page CMSIS_MISRA_Exceptions  MISRA-C:2004 Compliance Exceptions
   CMSIS violates the following MISRA-C:2004 rules:
 
+   \li Required Rule 18.4, declar
    \li Required Rule 8.5, object/function definition in header file.<br>
      Function definitions in header files are used to allow 'inlining'.
-
-   \li Required Rule 18.4, declaration of union type or object of union type: '{...}'.<br>
+ation of union type or object of union type: '{...}'.<br>
      Unions are used for effective representation of core registers.
 
    \li Advisory Rule 19.7, Function-like macro defined.<br>
@@ -61,8 +62,6 @@
  */
 
 #include "cmsis_version.h"
-#include "stm32wb55xx.h"
-
 
 /* CMSIS CM4 definitions */
 #define __CM4_CMSIS_VERSION_MAIN  (__CM_CMSIS_VERSION_MAIN)              /*!< \deprecated [31:16] CMSIS HAL main version */
