@@ -201,7 +201,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-  TOGGLE_GPIO_TEST_PIN();
+  //TOGGLE_GPIO_TEST_PIN();
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
@@ -346,6 +346,7 @@ void EXTI9_5_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
+	TOGGLE_GPIO_TEST_PIN();
 
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
