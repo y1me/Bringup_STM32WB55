@@ -25,6 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include "gpio.h"
 #include "stddef.h"
+#include "user.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,7 +45,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+volatile uint32_t tick;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,6 +75,14 @@ static PFV_EXTI pf_ext_int[]=
 				NULL,
 				NULL
 		};
+
+static const TIMED_PERIOD timed_task[] =
+{
+    { INTERVAL_16_MSEC,  fnA },
+    { INTERVAL_50_MSEC,  fnB },
+    { INTERVAL_500_MSEC, fnC },
+    { 0, NULL }
+};
 
 //pf_ext_int[5] = TOGGLE_GPIO_LED2;
 /* USER CODE END EV */

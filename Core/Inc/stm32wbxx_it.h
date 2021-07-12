@@ -28,12 +28,19 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
- typedef void (* const PFV_EXTI)(void);
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+ typedef void (* const PFV_EXTI)(void);
 
+ typedef struct
+ {
+    UCHAR interval;      /* How often to call the task */
+    void (*proc)(void);	/* pointer to function returning void */
+
+ } TIMED_PERIOD;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
