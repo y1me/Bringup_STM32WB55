@@ -26,6 +26,7 @@
 #include "gpio.h"
 #include "stddef.h"
 #include "user.h"
+#include "types.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

@@ -37,8 +37,6 @@
  extern "C" {
 #endif
 
-#include <stm32wbxx.h>
-#include <cmsis_gcc.h>
 /**
   \page CMSIS_MISRA_Exceptions  MISRA-C:2004 Compliance Exceptions
   CMSIS violates the following MISRA-C:2004 rules:
@@ -63,6 +61,9 @@
  */
 
 #include "cmsis_version.h"
+
+#include <stm32wbxx.h>
+#include <cmsis_gcc.h>
 
 /* CMSIS CM4 definitions */
 #define __CM4_CMSIS_VERSION_MAIN  (__CM_CMSIS_VERSION_MAIN)              /*!< \deprecated [31:16] CMSIS HAL main version */

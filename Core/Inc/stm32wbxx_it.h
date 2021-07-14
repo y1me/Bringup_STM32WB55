@@ -28,7 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "types.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -37,8 +37,8 @@
 
  typedef struct
  {
-    UCHAR interval;      /* How often to call the task */
-    void (*proc)(void);	/* pointer to function returning void */
+    u32 interval;      /* How often to call the task */
+    void (* const proc)(void);	/* pointer to function returning void */
 
  } TIMED_PERIOD;
 /* USER CODE END ET */
