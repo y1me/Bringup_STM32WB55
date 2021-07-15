@@ -79,9 +79,9 @@ static PFV_EXTI pf_ext_int[]=
 
 static const TIMED_PERIOD timed_task[] =
 {
-    { INTERVAL_16_MSEC,  fnA },
-    { INTERVAL_50_MSEC,  fnB },
-    { INTERVAL_500_MSEC, fnC },
+    { 4,  fnA },
+    { 200,  fnB },
+    { 30, fnC },
     { 0, NULL }
 };
 
@@ -212,15 +212,16 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
   //TOGGLE_GPIO_TEST_PIN();
+	//TIMED_PERIOD *ptr;
 	tick_ms++;
 	if (tick_ms == 1000)
 	{
 		tick_ms = 0;
 		tick_second++;
 	}
-	for (ptr = timed_task; ptr->interval != 0; ptr++)
+	for (const TIMED_PERIOD *ptr = timed_task; ptr->interval != 0; ptr++)
 	{
-		if (!(time % ptr->interval))
+		if (!(tick_ms % ptr->interval))
 		{
 			/* Time to call the function */
 			(ptr->proc)();
