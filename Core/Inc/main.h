@@ -69,10 +69,16 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define TEST_SWT1_Pin LL_GPIO_PIN_8
+#define TEST_SWT1_GPIO_Port GPIOB
+#define TEST_SWT2_Pin LL_GPIO_PIN_9
+#define TEST_SWT2_GPIO_Port GPIOB
 #define TEST_PIN_Pin LL_GPIO_PIN_4
 #define TEST_PIN_GPIO_Port GPIOC
 #define LED2_Pin LL_GPIO_PIN_0
 #define LED2_GPIO_Port GPIOB
+#define TEST_SWT3_Pin LL_GPIO_PIN_4
+#define TEST_SWT3_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

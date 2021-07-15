@@ -79,9 +79,9 @@ static PFV_EXTI pf_ext_int[]=
 
 static const TIMED_PERIOD timed_task[] =
 {
-    { 4,  fnA },
-    { 200,  fnB },
-    { 30, fnC },
+    { 4,  TOGGLE_GPIO_TEST_SWT1 },
+    { 200,  TOGGLE_GPIO_TEST_SWT2 },
+    { 30, TOGGLE_GPIO_TEST_SWT3 },
     { 0, NULL }
 };
 
@@ -210,8 +210,8 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  /* USER CODE BEGIN SysTick_IRQn 0 */
-  //TOGGLE_GPIO_TEST_PIN();
+	/* USER CODE BEGIN SysTick_IRQn 0 */
+	TOGGLE_GPIO_TEST_PIN();
 	//TIMED_PERIOD *ptr;
 	tick_ms++;
 	if (tick_ms == 1000)
@@ -227,11 +227,14 @@ void SysTick_Handler(void)
 			(ptr->proc)();
 		}
 	}
-  /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
-  /* USER CODE BEGIN SysTick_IRQn 1 */
 
-  /* USER CODE END SysTick_IRQn 1 */
+	TOGGLE_GPIO_TEST_PIN();
+
+	/* USER CODE END SysTick_IRQn 0 */
+	HAL_IncTick();
+	/* USER CODE BEGIN SysTick_IRQn 1 */
+
+	/* USER CODE END SysTick_IRQn 1 */
 }
 
 /******************************************************************************/
@@ -370,7 +373,7 @@ void EXTI9_5_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
-	TOGGLE_GPIO_TEST_PIN();
+	//TOGGLE_GPIO_TEST_PIN();
 
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
