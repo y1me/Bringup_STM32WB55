@@ -46,7 +46,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-volatile uint32_t tick;
+volatile uint32_t tick_ms = 0, tick_second = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -212,7 +212,20 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
   //TOGGLE_GPIO_TEST_PIN();
-
+	tick_ms++;
+	if (tick_ms == 1000)
+	{
+		tick_ms = 0;
+		tick_second++;
+	}
+	for (ptr = timed_task; ptr->interval != 0; ptr++)
+	{
+		if (!(time % ptr->interval))
+		{
+			/* Time to call the function */
+			(ptr->proc)();
+		}
+	}
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
