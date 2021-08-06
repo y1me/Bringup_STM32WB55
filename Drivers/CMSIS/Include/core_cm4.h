@@ -61,7 +61,10 @@
  */
 
 #include "cmsis_version.h"
-#include "stm32wb55xx.h"
+
+
+#include <stm32wbxx.h>
+#include <cmsis_gcc.h>
 
 
 /* CMSIS CM4 definitions */

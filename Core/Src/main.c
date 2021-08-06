@@ -19,6 +19,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
+#include "i2c.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -70,10 +72,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
-  /* System interrupt init*/
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -88,6 +87,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -156,10 +157,16 @@ void SystemClock_Config(void)
   /* Set APB2 prescaler*/
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
 
-  LL_Init1msTick(64000000);
-
   /* Update CMSIS variable (which can be updated also through SystemCoreClockUpdate function) */
   LL_SetSystemCoreClock(64000000);
+
+   /* Update the time base */
+  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  LL_RCC_ConfigMCO(LL_RCC_MCO1SOURCE_PLLCLK, LL_RCC_MCO1_DIV_1);
+  LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_PCLK1);
   LL_RCC_SetSMPSClockSource(LL_RCC_SMPS_CLKSOURCE_HSI);
   LL_RCC_SetSMPSPrescaler(LL_RCC_SMPS_DIV_1);
   LL_RCC_SetRFWKPClockSource(LL_RCC_RFWKP_CLKSOURCE_NONE);
