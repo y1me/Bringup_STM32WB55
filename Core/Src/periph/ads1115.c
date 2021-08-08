@@ -35,14 +35,14 @@
 
 
 
-#ifndef ADS101X_READ_DELAY
-#define ADS101X_READ_DELAY (8 * US_PER_MS)    /* Compatible with 128SPS */
-#endif
+//#ifndef ADS101X_READ_DELAY
+//#define ADS101X_READ_DELAY (8 * US_PER_MS)    /* Compatible with 128SPS */
+//#endif
 
-#define DEV (dev->params.i2c)
-#define ADDR (dev->params.addr)
+//#define DEV (dev->params.i2c)
+//#define ADDR (dev->params.addr)
 
-static int _ads101x_init_test(i2c_t i2c, uint8_t addr);
+//static int _ads101x_init_test(i2c_t i2c, uint8_t addr);
 
 int ads101x_init(ads101x_t *dev, const ads101x_params_t *params)
 {

@@ -42,17 +42,34 @@ extern "C" {
  * @ingroup config_drivers_sensors
  * @{
  */
-
+extern I2C_HandleTypeDef hi2c1;
 /**
  * @brief   Set ADS101x/111x default I2C address
  *
+ * Default STM32 I2C module
+ */
+
+#ifndef ADS101X_PARAM_I2C
+#define ADS101X_PARAM_I2C    (&hi2c1)
+#endif
+/**
+ * alert pin status
+ */
+#ifndef ADS101X_PARAM_ALERT_TRUE
+#define ADS101X_PARAM_ALERT_TRUE    1
+#endif
+#ifndef ADS101X_PARAM_ALERT_FALSE
+#define ADS101X_PARAM_ALERT_FALSE    0
+#endif
+/** @} */
+
+/**
  * Address pin tied to: GND (0x48), Vcc (0x49), SDA (0x50), SCL (0x51)
  */
 #ifndef CONFIG_ADS101X_I2C_ADDRESS
 #define CONFIG_ADS101X_I2C_ADDRESS    (0x48)
 #endif
 /** @} */
-
 /**
  * @brief   Named return values
  */
@@ -78,7 +95,7 @@ typedef struct ads101x_params {
 typedef struct ads101x_alert_params {
 	I2C_HandleTypeDef* i2cHandle;              /**< i2c device */
     uint8_t addr;           /**< i2c address */
-    gpio_t alert_pin;       /**< alert pin (GPIO_UNDEF if not connected) */
+    uint8_t alert_pin_status;       /**< alert pin (GPIO_UNDEF if not connected) */
     int16_t low_limit;      /**< alert low value */
     int16_t high_limit;     /**< alert high value */
 } ads101x_alert_params_t;

@@ -32,9 +32,11 @@ extern "C" {
  * @name    Set default configuration parameters for the ADS101x/111x driver
  * @{
  */
+
 #ifndef ADS101X_PARAM_I2C
-#define ADS101X_PARAM_I2C        (I2C_DEV(0))
+#define ADS101X_PARAM_I2C       (ADS101X_PARAM_I2C)
 #endif
+
 #ifndef ADS101X_PARAM_ADDR
 #define ADS101X_PARAM_ADDR       (CONFIG_ADS101X_I2C_ADDRESS)
 #endif
@@ -42,9 +44,11 @@ extern "C" {
 #define ADS101X_PARAM_MUX_GAIN   (ADS101X_AIN0_DIFFM_AIN1 \
                                   | ADS101X_PGA_FSR_2V048)
 #endif
-#ifndef ADS101X_PARAM_ALERT_PIN
-#define ADS101X_PARAM_ALERT_PIN  (GPIO_UNDEF)
+
+#ifndef ADS101X_PARAM_ALERT_STATUS
+#define ADS101X_PARAM_ALERT_STATUS       (ADS101X_PARAM_ALERT_FALSE)
 #endif
+
 #ifndef ADS101X_PARAM_LOW_LIMIT
 #define ADS101X_PARAM_LOW_LIMIT  (10000U)
 #endif
@@ -61,7 +65,7 @@ extern "C" {
 #ifndef ADS101X_ALERT_PARAMS
 #define ADS101X_ALERT_PARAMS    { .i2cHandle        = ADS101X_PARAM_I2C,        \
                                   .addr       = ADS101X_PARAM_ADDR,       \
-                                  .alert_pin  = ADS101X_PARAM_ALERT_PIN,  \
+								  .alert_pin_status	= ADS101X_PARAM_ALERT_STATUS,       \
                                   .low_limit  = ADS101X_PARAM_LOW_LIMIT,  \
                                   .high_limit = ADS101X_PARAM_HIGH_LIMIT }
 #endif
