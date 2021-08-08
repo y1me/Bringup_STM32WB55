@@ -44,10 +44,10 @@
 
 //static int _ads101x_init_test(i2c_t i2c, uint8_t addr);
 /* Buffer used for transmission */
-uint8_t aTxBuffer[16];
+uint8_t aTxBuffer[ADS101X_BUFFER_SIZE];
 
 /* Buffer used for reception */
-uint8_t aRxBuffer[16];
+uint8_t aRxBuffer[ADS101X_BUFFER_SIZE];
 
 
 int ads101x_init(ads101x_t *dev, const ads101x_params_t *params)

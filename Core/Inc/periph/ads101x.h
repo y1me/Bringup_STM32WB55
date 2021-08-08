@@ -62,7 +62,34 @@ extern I2C_HandleTypeDef hi2c1;
 #define ADS101X_PARAM_ALERT_FALSE    0
 #endif
 /** @} */
-
+/**
+ * Tx or Rx Buffer size
+ */
+#ifndef ADS101X_BUFFER_SIZE
+#define ADS101X_BUFFER_SIZE    4
+#endif
+/** @} */
+/**
+ * Tx data Buffer size
+ */
+#ifndef ADS101X_TX_DATA_SIZE
+#define ADS101X_TX_DATA_SIZE    1
+#endif
+/** @} */
+/**
+ * Rx data Buffer size
+ */
+#ifndef ADS101X_RX_DATA_SIZE
+#define ADS101X_RX_DATA_SIZE    3
+#endif
+/** @} */
+/**
+ * I2C timeout
+ */
+#ifndef ADS101X_I2C_TIMEOUT
+#define ADS101X_I2C_TIMEOUT    2
+#endif
+/** @} */
 /**
  * Address pin tied to: GND (0x48), Vcc (0x49), SDA (0x50), SCL (0x51)
  */
