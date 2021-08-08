@@ -43,6 +43,12 @@
 //#define ADDR (dev->params.addr)
 
 //static int _ads101x_init_test(i2c_t i2c, uint8_t addr);
+/* Buffer used for transmission */
+uint8_t aTxBuffer[16];
+
+/* Buffer used for reception */
+uint8_t aRxBuffer[16];
+
 
 int ads101x_init(ads101x_t *dev, const ads101x_params_t *params)
 {

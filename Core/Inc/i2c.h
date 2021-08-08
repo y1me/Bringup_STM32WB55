@@ -40,6 +40,10 @@ extern I2C_HandleTypeDef hi2c1;
 void MX_I2C1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void I2C_DMA_TX(I2C_HandleTypeDef* , uint16_t, uint8_t*, uint16_t );
+void I2C_DMA_RX(I2C_HandleTypeDef* , uint16_t, uint8_t*, uint16_t );
+void I2C_TX(I2C_HandleTypeDef* , uint16_t, uint8_t*, uint16_t, uint32_t );
+void I2C_RX(I2C_HandleTypeDef* , uint16_t, uint8_t*, uint16_t, uint32_t );
 
 /* USER CODE END Prototypes */
 

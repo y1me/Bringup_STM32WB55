@@ -175,6 +175,41 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 
 /* USER CODE BEGIN 1 */
 
+void I2C_DMA_TX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aTxBuffer, uint16_t Size)
+{
+	if(HAL_I2C_Master_Transmit_DMA(i2cHandle, i2cAddress, aTxBuffer, Size)!= HAL_OK)
+	{
+		/* Error_Handler() function is called when error occurs. */
+		Error_Handler();
+	}
+}
+
+void I2C_DMA_RX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aRxBuffer, uint16_t Size)
+{
+	if(HAL_I2C_Master_Receive_DMA(i2cHandle, i2cAddress, aRxBuffer, Size) != HAL_OK)
+	{
+		/* Error_Handler() function is called when error occurs. */
+		Error_Handler();
+	}
+}
+
+void I2C_TX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aTxBuffer, uint16_t Size, uint32_t Timeout)
+{
+	if(HAL_I2C_Master_Transmit(i2cHandle, i2cAddress, aTxBuffer, Size, Timeout)!= HAL_OK)
+	{
+		/* Error_Handler() function is called when error occurs. */
+		Error_Handler();
+	}
+}
+
+void I2C_RX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aTxBuffer, uint16_t Size, uint32_t Timeout)
+{
+	if(HAL_I2C_Master_Receive(i2cHandle, i2cAddress, aTxBuffer, Size, Timeout)!= HAL_OK)
+	{
+		/* Error_Handler() function is called when error occurs. */
+		Error_Handler();
+	}
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
