@@ -94,7 +94,7 @@ extern I2C_HandleTypeDef hi2c1;
  * Address pin tied to: GND (0x48), Vcc (0x49), SDA (0x50), SCL (0x51)
  */
 #ifndef CONFIG_ADS101X_I2C_ADDRESS
-#define CONFIG_ADS101X_I2C_ADDRESS    (0x48)
+#define CONFIG_ADS101X_I2C_ADDRESS    (0x49)
 #endif
 /** @} */
 /**

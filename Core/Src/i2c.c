@@ -40,7 +40,7 @@ void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x00602173;
+  hi2c1.Init.Timing = 0x108083B5;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -177,7 +177,7 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 
 void I2C_DMA_TX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aTxBuffer, uint16_t Size)
 {
-	if(HAL_I2C_Master_Transmit_DMA(i2cHandle, i2cAddress, aTxBuffer, Size)!= HAL_OK)
+	if(HAL_I2C_Master_Transmit_DMA(i2cHandle, i2cAddress << 1, aTxBuffer, Size)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();
@@ -186,7 +186,7 @@ void I2C_DMA_TX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aTx
 
 void I2C_DMA_RX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aRxBuffer, uint16_t Size)
 {
-	if(HAL_I2C_Master_Receive_DMA(i2cHandle, i2cAddress, aRxBuffer, Size) != HAL_OK)
+	if(HAL_I2C_Master_Receive_DMA(i2cHandle, i2cAddress << 1, aRxBuffer, Size) != HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();
@@ -195,16 +195,16 @@ void I2C_DMA_RX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aRx
 
 void I2C_TX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aTxBuffer, uint16_t Size, uint32_t Timeout)
 {
-	if(HAL_I2C_Master_Transmit(i2cHandle, i2cAddress, aTxBuffer, Size, Timeout)!= HAL_OK)
+	if(HAL_I2C_Master_Transmit(i2cHandle, i2cAddress << 1, aTxBuffer, Size, Timeout)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();
 	}
 }
 
-void I2C_RX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aTxBuffer, uint16_t Size, uint32_t Timeout)
+void I2C_RX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aRxBuffer, uint16_t Size, uint32_t Timeout)
 {
-	if(HAL_I2C_Master_Receive(i2cHandle, i2cAddress, aTxBuffer, Size, Timeout)!= HAL_OK)
+	if(HAL_I2C_Master_Receive(i2cHandle, i2cAddress << 1, aRxBuffer, Size, Timeout)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();

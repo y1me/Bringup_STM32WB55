@@ -62,7 +62,6 @@
 
 #include "cmsis_version.h"
 
-
 #include <stm32wbxx.h>
 #include <cmsis_gcc.h>
 

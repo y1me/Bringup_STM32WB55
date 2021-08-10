@@ -45,7 +45,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+/* Buffer used for transmission */
+uint8_t aTxBuffer[8] = { 0x01, 0x85, 0x83, };
+/* Buffer used for reception */
+uint8_t aRxBuffer[8]= { 0x01, };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -90,7 +93,8 @@ int main(void)
   MX_DMA_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
+  I2C_DMA_TX(&hi2c1, 0x49, aTxBuffer, 3);
+  I2C_DMA_RX(&hi2c1, 0x48, aRxBuffer, 3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
