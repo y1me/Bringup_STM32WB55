@@ -34,6 +34,14 @@ extern "C" {
 extern I2C_HandleTypeDef hi2c1;
 
 /* USER CODE BEGIN Private defines */
+typedef struct {
+	I2C_HandleTypeDef* i2cHandle;
+	uint16_t Address;
+	uint8_t* Buffer;
+	uint16_t Size;
+	uint32_t Timeout;
+} i2cFunctionParam_t;
+
 typedef enum {
     ST_I2C_INIT,
     ST_I2C_IDLE,
@@ -50,24 +58,33 @@ typedef enum {
 	EV_I2C_DMA_TX_DONE,
 	EV_I2C_RX_DONE,
 	EV_I2C_TX_DONE,
+	EV_I2C_DMA_RX,
+	EV_I2C_DMA_TX,
+	EV_I2C_RX,
+	EV_I2C_TX,
 	EV_I2C_ERROR,
+	EV_I2C_ERROR_ACK,
+	EV_I2C_NONE
 } event_i2c_t;
 
 typedef struct {
-    state_t currState;
-    event_t event;
-    state_t nextState;
-} stateTransMatrixRow_i2c_t;
+    const char * name;
+    void (*func)(void);
+} stateFunctionRow_t;
+
+typedef struct {
+	state_i2c_t currState;
+} i2c_stateMachine_t;
 
 /* USER CODE END Private defines */
 
 void MX_I2C1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void I2C_DMA_TX(I2C_HandleTypeDef* , uint16_t, uint8_t*, uint16_t );
-void I2C_DMA_RX(I2C_HandleTypeDef* , uint16_t, uint8_t*, uint16_t );
-void I2C_TX(I2C_HandleTypeDef* , uint16_t, uint8_t*, uint16_t, uint32_t );
-void I2C_RX(I2C_HandleTypeDef* , uint16_t, uint8_t*, uint16_t, uint32_t );
+void I2C_DMA_TX(i2cFunctionParam_t);
+void I2C_DMA_RX(i2cFunctionParam_t);
+void I2C_TX(i2cFunctionParam_t);
+void I2C_RX(i2cFunctionParam_t);
 
 /* USER CODE END Prototypes */
 
