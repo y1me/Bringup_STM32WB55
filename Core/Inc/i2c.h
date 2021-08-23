@@ -34,6 +34,30 @@ extern "C" {
 extern I2C_HandleTypeDef hi2c1;
 
 /* USER CODE BEGIN Private defines */
+typedef enum {
+    ST_I2C_INIT,
+    ST_I2C_IDLE,
+	ST_I2C_DMA_RX,
+	ST_I2C_DMA_TX,
+	ST_I2C_RX,
+	ST_I2C_TX,
+	ST_I2C_ERROR
+} state_i2c_t;
+
+typedef enum {
+    EV_I2C_INIT_DONE,
+	EV_I2C_DMA_RX_DONE,
+	EV_I2C_DMA_TX_DONE,
+	EV_I2C_RX_DONE,
+	EV_I2C_TX_DONE,
+	EV_I2C_ERROR,
+} event_i2c_t;
+
+typedef struct {
+    state_t currState;
+    event_t event;
+    state_t nextState;
+} stateTransMatrixRow_i2c_t;
 
 /* USER CODE END Private defines */
 

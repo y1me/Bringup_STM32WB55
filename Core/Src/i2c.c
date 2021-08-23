@@ -22,6 +22,24 @@
 
 /* USER CODE BEGIN 0 */
 
+static stateTransMatrixRow_t stateTransMatrix[] = {
+    // CURR STATE  // EVENT           // NEXT STATE
+    { ST_INIT,     EV_ANY,               ST_IDLE    },
+    { ST_IDLE,     EV_BUTTON_PUSHED,     ST_LED_ON  },
+    { ST_LED_ON,   EV_TIME_OUT,          ST_LED_OFF },
+    { ST_LED_ON,   EV_BUTTON_PUSHED,     ST_IDLE    },
+    { ST_LED_OFF,  EV_TIME_OUT,          ST_LED_ON  },
+    { ST_LED_OFF,  EV_BUTTON_PUSHED,     ST_IDLE    }
+};
+
+static stateFunctionRow_t stateFunctionA[] = {
+        // NAME         // FUNC
+    { "ST_INIT",      &Led_Init },      // ST_INIT
+    { "ST_IDLE",      &Led_Idle },      // ST_IDLE
+    { "ST_LED_ON",    &Led_On },        // ST_LED_ON
+    { "ST_LED_OFF",   &Led_Off },       // ST_LED_OFF
+};
+
 /* USER CODE END 0 */
 
 I2C_HandleTypeDef hi2c1;
@@ -209,6 +227,25 @@ void I2C_RX(I2C_HandleTypeDef* i2cHandle, uint16_t i2cAddress,  uint8_t* aRxBuff
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();
 	}
+}
+
+void I2C_StateMachine_RunIt(stateMachine_t *stateMachine, event_t event) {
+
+    // Iterate through the state transition matrix, checking if there is both a match with the current state
+    // and the event
+    for(int i = 0; i < sizeof(stateTransMatrix)/sizeof(stateTransMatrix[0]); i++) {
+        if(stateTransMatrix[i].currState == stateMachine->currState) {
+            if((stateTransMatrix[i].event == event) || (stateTransMatrix[i].event == EV_ANY)) {
+
+                // Transition to the next state
+                stateMachine->currState =  stateTransMatrix[i].nextState;
+
+                // Call the function associated with transition
+                (stateFunctionA[stateMachine->currState].func)();
+                break;
+            }
+        }
+    }
 }
 /* USER CODE END 1 */
 
