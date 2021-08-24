@@ -27,8 +27,35 @@ I2C_HandleTypeDef hi2c1;
 DMA_HandleTypeDef hdma_i2c1_rx;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
-i2cFunctionParam_t i2c_params_rx;
-i2cFunctionParam_t i2c_params_tx;
+i2cFunctionParam_t i2c_params_data;
+
+/* USER CODE BEGIN Private Prototypes */
+void MX_I2C1_Init(i2cFunctionParam_t *);
+void I2C_DMA_TX(i2cFunctionParam_t *);
+void I2C_DMA_RX(i2cFunctionParam_t *);
+void I2C_TX(i2cFunctionParam_t *);
+void I2C_RX(i2cFunctionParam_t *);
+void I2C_TX_RX_Done(i2cFunctionParam_t *);
+
+
+void StateMachine_Iteration(i2cFunctionParam_t *);
+/* USER CODE END Private Prototypes */
+
+typedef struct {
+    const char * name;
+    void (* const func)(i2cFunctionParam_t *);
+} stateFunctionRow_t;
+
+static stateFunctionRow_t I2C_stateFunction[] = {
+        // NAME         // FUNC
+    { "ST_I2C_INIT",	MX_I2C1_Init},
+    { "ST_I2C_IDLE",	NULL },
+    { "ST_I2C_DMA_RX",	I2C_DMA_RX },
+    { "ST_I2C_DMA_TX",	I2C_DMA_TX },
+    { "ST_I2C_RX",		I2C_RX },
+    { "ST_I2C_TX",		I2C_TX },
+    { "ST_I2C_ERROR",	NULL }
+};
 
 typedef struct {
 	state_i2c_t currState;
@@ -38,30 +65,20 @@ typedef struct {
 
 static stateTransMatrixRow_t I2C_stateTransMatrix[] = {
     // CURR STATE  v// EVENT           // NEXT STATE
-    { ST_I2C_INIT,     EV_I2C_INIT_DONE,     ST_I2C_IDLE  },
-    { ST_I2C_DMA_RX,     EV_I2C_DMA_RX_DONE,     ST_I2C_IDLE  },
-    { ST_I2C_DMA_TX,     EV_I2C_DMA_TX_DONE,     ST_I2C_IDLE  },
-    { ST_I2C_RX,     EV_I2C_RX_DONE,     ST_I2C_IDLE  },
-    { ST_I2C_TX,     EV_I2C_TX_DONE,     ST_I2C_IDLE  },
-    { ST_I2C_IDLE,     EV_I2C_DMA_RX,     ST_I2C_DMA_RX  },
-    { ST_I2C_IDLE,     EV_I2C_DMA_TX,     ST_I2C_DMA_TX  },
-    { ST_I2C_IDLE,     EV_I2C_RX,     ST_I2C_RX  },
-    { ST_I2C_IDLE,     EV_I2C_TX,     ST_I2C_TX  },
-    { ST_I2C_INIT,     EV_I2C_ERROR,     ST_I2C_ERROR  },
-    { ST_I2C_INIT,     EV_I2C_ERROR_ACK,     ST_I2C_IDLE  },
-    { ST_I2C_IDLE,     EV_I2C_NONE,     ST_I2C_IDLE  },
+    { ST_I2C_INIT,		EV_I2C_INIT_DONE,		ST_I2C_IDLE  },
+    { ST_I2C_DMA_RX,	EV_I2C_DMA_RX_DONE,		ST_I2C_IDLE  },
+    { ST_I2C_DMA_TX,	EV_I2C_DMA_TX_DONE,		ST_I2C_IDLE  },
+    { ST_I2C_RX,     	EV_I2C_RX_DONE,			ST_I2C_IDLE  },
+    { ST_I2C_TX,		EV_I2C_TX_DONE,			ST_I2C_IDLE  },
+    { ST_I2C_IDLE,		EV_I2C_DMA_RX,			ST_I2C_DMA_RX  },
+    { ST_I2C_IDLE,		EV_I2C_DMA_TX,			ST_I2C_DMA_TX  },
+    { ST_I2C_IDLE,		EV_I2C_RX,				ST_I2C_RX  },
+    { ST_I2C_IDLE,		EV_I2C_TX,				ST_I2C_TX  },
+    { ST_I2C_INIT,		EV_I2C_ERROR,			ST_I2C_ERROR  },
+    { ST_I2C_ERROR,		EV_I2C_ERROR_ACK,		ST_I2C_IDLE  },
+    { ST_I2C_IDLE,		EV_I2C_NONE,			ST_I2C_IDLE  },
 };
 
-static stateFunctionRow_t I2C_stateFunction[] = {
-        // NAME         // FUNC
-    { "ST_I2C_INIT",      &MX_I2C1_Init() },
-    { "ST_I2C_IDLE",      NULL },
-    { "ST_I2C_DMA_RX",    &I2C_DMA_RX(i2c_params_rx) },
-    { "ST_I2C_DMA_TX",    &I2C_DMA_TX(i2c_params_tx) },
-    { "ST_I2C_RX",        &I2C_RX(i2c_params_rx) },
-    { "ST_I2C_TX",        &I2C_TX(i2c_params_rx) },
-    { "ST_I2C_ERROR",     NULL }
-};
 
 
 /* USER CODE END 0 */
@@ -69,7 +86,7 @@ static stateFunctionRow_t I2C_stateFunction[] = {
 
 
 /* I2C1 init function */
-void MX_I2C1_Init(void)
+void MX_I2C1_Init(i2cFunctionParam_t* data)
 {
 
   /* USER CODE BEGIN I2C1_Init 0 */
@@ -105,7 +122,9 @@ void MX_I2C1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN I2C1_Init 2 */
-
+  data->currState = ST_I2C_IDLE;
+  data->event = EV_I2C_NONE;
+  data->buffer= NULL;
   /* USER CODE END I2C1_Init 2 */
 
 }
@@ -215,59 +234,96 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 
 /* USER CODE BEGIN 1 */
 
-void I2C_DMA_TX(i2cFunctionParam_t Params)
+void I2C_DMA_TX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Transmit_DMA(Params.i2cHandle, Params.Address << 1, Params.Buffer, Params.Size)!= HAL_OK)
+	if(HAL_I2C_Master_Transmit_DMA(Params->i2cHandle, Params->address << 1, Params->buffer, Params->size)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();
 	}
 }
 
-void I2C_DMA_RX(i2cFunctionParam_t Params)
+void I2C_DMA_RX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Receive_DMA(Params.i2cHandle, Params.Address << 1, Params.Buffer, Params.Size) != HAL_OK)
+	if(HAL_I2C_Master_Receive_DMA(Params->i2cHandle, Params->address << 1, Params->buffer, Params->size) != HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();
 	}
 }
 
-void I2C_TX(i2cFunctionParam_t Params)
+void I2C_TX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Transmit(Params.i2cHandle, Params.Address << 1, Params.Buffer, Params.Size, Params.Timeout)!= HAL_OK)
+	if(HAL_I2C_Master_Transmit(Params->i2cHandle, Params->address << 1, Params->buffer, Params->size, Params->timeout)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();
 	}
 }
 
-void I2C_RX(i2cFunctionParam_t Params)
+void I2C_RX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Receive(Params.i2cHandle, Params.Address << 1, Params.Buffer, Params.Size, Params.Timeout)!= HAL_OK)
+	if(HAL_I2C_Master_Receive(Params->i2cHandle, Params->address << 1, Params->buffer, Params->size, Params->timeout)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Error_Handler();
 	}
 }
 
-void I2C_StateMachine_RunIt(state_i2c_t *currState, event_i2c_t event) {
+void Running_StateMachine_Iteration(void)
+{
+	StateMachine_Iteration(&i2c_params_data);
+}
+
+void StateMachine_Iteration(i2cFunctionParam_t* data)
+{
 
     // Iterate through the state transition matrix, checking if there is both a match with the current state
     // and the event
-    for(int i = 0; i < sizeof(stateTransMatrix)/sizeof(stateTransMatrix[0]); i++) {
-        if(stateTransMatrix[i].currState == *currState) {
-            if((stateTransMatrix[i].event == event) || (stateTransMatrix[i].event == EV_ANY)) {
+    for(int i = 0; i < sizeof(I2C_stateTransMatrix)/sizeof(I2C_stateTransMatrix[0]); i++) {
+        if(I2C_stateTransMatrix[i].currState == data->currState) {
+            if(I2C_stateTransMatrix[i].event == data->event) {
 
                 // Transition to the next state
-            	*currState =  stateTransMatrix[i].nextState;
+            	data->currState =  I2C_stateTransMatrix[i].nextState;
 
                 // Call the function associated with transition
-                (stateFunctionA[*currState].func)();
+                (I2C_stateFunction[data->currState].func)(data);
                 break;
             }
         }
     }
+}
+
+void I2C_RX_TX_DMA_ACK(void)
+{
+	I2C_TX_RX_Done(&i2c_params_data);
+}
+
+void I2C_TX_RX_Done(i2cFunctionParam_t* data)
+{
+
+    // Update i2c even status when transmission success
+    // and the event
+	if (data->event == EV_I2C_DMA_RX)
+	{
+		data->event = EV_I2C_DMA_RX_DONE;
+	}
+
+	if (data->event == EV_I2C_DMA_TX)
+	{
+		data->event = EV_I2C_DMA_TX_DONE;
+	}
+
+	if (data->event == EV_I2C_TX)
+	{
+		data->event = EV_I2C_TX_DONE;
+	}
+
+	if (data->event == EV_I2C_RX)
+	{
+		data->event = EV_I2C_RX_DONE;
+	}
 }
 /* USER CODE END 1 */
 
