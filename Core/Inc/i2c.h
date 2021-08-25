@@ -61,7 +61,6 @@ typedef enum {
 	EV_I2C_RX,
 	EV_I2C_TX,
 	EV_I2C_ERROR,
-	EV_I2C_ERROR_ACK,
 	EV_I2C_NONE
 } event_i2c_t;
 
