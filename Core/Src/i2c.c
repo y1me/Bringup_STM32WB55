@@ -28,7 +28,16 @@ I2C_HandleTypeDef hi2c1;
 DMA_HandleTypeDef hdma_i2c1_rx;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
-i2cFunctionParam_t i2c_params_data;
+i2cFunctionParam_t i2c_params_data = {
+		NULL,
+		0,
+		NULL,
+		0,
+		0,
+		ST_I2C_INIT,
+		EV_I2C_NONE
+
+};
 
 /* USER CODE BEGIN Private Prototypes */
 void MX_I2C1_Init(i2cFunctionParam_t *);
@@ -83,6 +92,7 @@ static stateTransMatrixRow_t I2C_stateTransMatrix[] = {
     { ST_I2C_TX,		EV_I2C_ERROR,			ST_I2C_ERROR  },
     { ST_I2C_ERROR,		EV_I2C_NONE,			ST_I2C_IDLE  },
     { ST_I2C_IDLE,		EV_I2C_NONE,			ST_I2C_IDLE  },
+	{ ST_I2C_INIT,		EV_I2C_NONE,			ST_I2C_INIT  }
 };
 
 
@@ -132,7 +142,7 @@ void MX_I2C1_Init(i2cFunctionParam_t* data)
   }
   /* USER CODE BEGIN I2C1_Init 2 */
   data->currState = ST_I2C_IDLE;
-  data->event = EV_I2C_NONE;
+  data->event = EV_I2C_INIT_DONE;
   data->buffer= NULL;
   /* USER CODE END I2C1_Init 2 */
 

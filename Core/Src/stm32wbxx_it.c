@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gpio.h"
+#include "i2c.h"
 #include "stddef.h"
 /* USER CODE END Includes */
 
@@ -202,12 +203,23 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  /* USER CODE BEGIN SysTick_IRQn 0 */
 
+
+  /* USER CODE BEGIN SysTick_IRQn 0 */
+	static int8_t count;
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
-  /* USER CODE BEGIN SysTick_IRQn 1 */
 
+  /* USER CODE BEGIN SysTick_IRQn 1 */
+  if (count > 100)
+  {
+	  count = 0;
+  }
+  if (count == 80)
+  {
+	  Running_StateMachine_Iteration();
+  }
+  count++;
   /* USER CODE END SysTick_IRQn 1 */
 }
 
@@ -252,6 +264,7 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_i2c1_rx);
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+  I2C_RX_TX_DMA_ACK();
 
   /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
@@ -266,7 +279,7 @@ void DMA1_Channel2_IRQHandler(void)
   /* USER CODE END DMA1_Channel2_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_i2c1_tx);
   /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
-
+  I2C_RX_TX_DMA_ACK();
   /* USER CODE END DMA1_Channel2_IRQn 1 */
 }
 

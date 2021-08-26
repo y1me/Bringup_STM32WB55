@@ -22,6 +22,7 @@
 #include "dma.h"
 #include "i2c.h"
 #include "gpio.h"
+#include "Utils/Commons.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -78,7 +79,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  i2c_params_data.i2cHandle = &hi2c1;
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -91,7 +92,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_I2C1_Init();
+  //MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   //I2C_DMA_TX(&hi2c1, 0x49, aTxBuffer, 3);
   //I2C_DMA_RX(&hi2c1, 0x48, aRxBuffer, 3);
