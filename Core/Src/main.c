@@ -79,7 +79,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  i2c_params_data.i2cHandle = &hi2c1;
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -92,10 +91,20 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
+
   //MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+
+  i2c_params_data.i2cHandle = &hi2c1;
+  while (i2c_params_data.event != EV_I2C_INIT_DONE);
+
+  i2c_params_data.buffer = aRxBuffer;
+  i2c_params_data.size = 3;
+  i2c_params_data.address = 0x49;
+  i2c_params_data.event = EV_I2C_DMA_RX;
+
   //I2C_DMA_TX(&hi2c1, 0x49, aTxBuffer, 3);
-  //I2C_DMA_RX(&hi2c1, 0x48, aRxBuffer, 3);
+  //I2C_DMA_RX(&hi2c1, 0x49, aRxBuffer, 3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,7 +113,9 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  if (i2c_params_data.event == EV_I2C_DMA_RX_DONE){
+		  i2c_params_data.event = EV_I2C_NONE;
+	  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

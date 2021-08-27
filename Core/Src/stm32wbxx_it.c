@@ -259,14 +259,14 @@ void EXTI3_IRQHandler(void)
   */
 void DMA1_Channel1_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+	/* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
 
-  /* USER CODE END DMA1_Channel1_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_i2c1_rx);
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
-  I2C_RX_TX_DMA_ACK();
+	/* USER CODE END DMA1_Channel1_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_i2c1_rx);
+	/* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+	I2C_RX_TX_DMA_ACK();
 
-  /* USER CODE END DMA1_Channel1_IRQn 1 */
+	/* USER CODE END DMA1_Channel1_IRQn 1 */
 }
 
 /**
