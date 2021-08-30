@@ -57,17 +57,17 @@ extern "C" {
 #endif
 
 #ifndef ADS101X_PARAMS
-#define ADS101X_PARAMS          { .i2cHandle        = ADS101X_PARAM_I2C,        \
-                                  .addr       = ADS101X_PARAM_ADDR,       \
-                                  .mux_gain   = ADS101X_PARAM_MUX_GAIN }
+#define ADS101X_PARAMS          { .i2cHandle        = ADS101X_PARAM_I2C,\
+                                  .addr       		= ADS101X_PARAM_ADDR,\
+                                  .mux_gain   		= ADS101X_PARAM_MUX_GAIN }
 #endif
 
 #ifndef ADS101X_ALERT_PARAMS
-#define ADS101X_ALERT_PARAMS    { .i2cHandle        = ADS101X_PARAM_I2C,        \
-                                  .addr       = ADS101X_PARAM_ADDR,       \
-								  .alert_pin_status	= ADS101X_PARAM_ALERT_STATUS,       \
-                                  .low_limit  = ADS101X_PARAM_LOW_LIMIT,  \
-                                  .high_limit = ADS101X_PARAM_HIGH_LIMIT }
+#define ADS101X_ALERT_PARAMS    { .i2cHandle        = ADS101X_PARAM_I2C,\
+                                  .addr       		= ADS101X_PARAM_ADDR,\
+								  .alert_pin_status	= ADS101X_PARAM_ALERT_STATUS,\
+                                  .low_limit  		= ADS101X_PARAM_LOW_LIMIT,\
+                                  .high_limit 		= ADS101X_PARAM_HIGH_LIMIT }
 #endif
 //#ifndef ADS101X_SAUL_INFO
 //#define ADS101X_SAUL_INFO       { .name = "ads101x" }

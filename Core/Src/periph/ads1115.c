@@ -33,6 +33,8 @@
 #include "periph/ads101x_params.h"
 #include "periph/ads101x_regs.h"
 
+#include "i2c.h"
+#include "Utils/Commons.h"
 
 
 //#ifndef ADS101X_READ_DELAY
@@ -77,9 +79,15 @@ int ads101x_alert_init(ads101x_alert_t *dev,
 
 static int _ads101x_init_test(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
 {
-    uint8_t regs[2];
+    uint8_t regs[2] = {ADS101X_CONF_ADDR,0};
 
-    //i2c_acquire(i2c);
+    i2c_params_data.i2cHandle = i2cHandle;
+    i2c_params_data.buffer = &regs;
+    i2c_params_data.sizeTx = 1;
+    i2c_params_data.sizeRx = 2;
+    i2c_params_data.address = addr;
+    i2c_params_data.event = EV_I2C_DMA_TX_RX;
+    if
 
     /* Register read test */
     /*

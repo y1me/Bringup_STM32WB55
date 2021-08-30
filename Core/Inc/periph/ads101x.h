@@ -101,37 +101,37 @@ extern I2C_HandleTypeDef hi2c1;
  * @brief   Named return values
  */
 enum {
-    ADS101X_OK          =  0,       /**< everything was fine */
-    ADS101X_NOI2C       = -1,       /**< I2C communication failed */
-    ADS101X_NODEV       = -2,       /**< no ADS101X device found on the bus */
-    ADS101X_NODATA      = -3        /**< no data available */
+    ADS101X_OK          =  0,       	/**< everything was fine */
+    ADS101X_NOI2C       = -1,       	/**< I2C communication failed */
+    ADS101X_NODEV       = -2,       	/**< no ADS101X device found on the bus */
+    ADS101X_NODATA      = -3        	/**< no data available */
 };
 
 /**
  * @brief   ADS101x/111x params
  */
 typedef struct ads101x_params {
-	I2C_HandleTypeDef* i2cHandle;              /**< i2c device */
-    uint8_t addr;           /**< i2c address */
-    uint8_t mux_gain;       /**< Mux and gain boolean settings */
+	I2C_HandleTypeDef* i2cHandle;		/**< i2c device */
+    uint8_t addr;						/**< i2c address */
+    uint8_t mux_gain;					/**< Mux and gain boolean settings */
 } ads101x_params_t;
 
 /**
  * @brief   ADS101x/111x alert params
  */
 typedef struct ads101x_alert_params {
-	I2C_HandleTypeDef* i2cHandle;              /**< i2c device */
-    uint8_t addr;           /**< i2c address */
-    uint8_t alert_pin_status;       /**< alert pin (GPIO_UNDEF if not connected) */
-    int16_t low_limit;      /**< alert low value */
-    int16_t high_limit;     /**< alert high value */
+	I2C_HandleTypeDef* i2cHandle;		/**< i2c device */
+    uint8_t addr;						/**< i2c address */
+    uint8_t alert_pin_status;			/**< alert pin (GPIO_UNDEF if not connected) */
+    int16_t low_limit;					/**< alert low value */
+    int16_t high_limit;					/**< alert high value */
 } ads101x_alert_params_t;
 
 /**
  * @brief   ADS101x/111x device descriptor
  */
 typedef struct ads101x {
-    ads101x_params_t params;    /**< device driver configuration */
+    ads101x_params_t params;    		/**< device driver configuration */
 } ads101x_t;
 
 /**

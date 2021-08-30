@@ -54,10 +54,12 @@ typedef enum {
     EV_I2C_INIT_DONE,
 	EV_I2C_DMA_RX_DONE,
 	EV_I2C_DMA_TX_DONE,
+	EV_I2C_DMA_TX_RX_TX_DONE,
 	EV_I2C_RX_DONE,
 	EV_I2C_TX_DONE,
 	EV_I2C_DMA_RX,
 	EV_I2C_DMA_TX,
+	EV_I2C_DMA_TX_RX,
 	EV_I2C_RX,
 	EV_I2C_TX,
 	EV_I2C_ERROR,
@@ -68,7 +70,9 @@ typedef struct {
 	I2C_HandleTypeDef* i2cHandle;
 	uint16_t address;
 	uint8_t* buffer;
-	uint16_t size;
+	//uint8_t* bufferRx;
+	uint16_t sizeTx;
+	uint16_t sizeRx;
 	uint32_t timeout;
 	state_i2c_t currState;
 	event_i2c_t event;

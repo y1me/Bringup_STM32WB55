@@ -34,6 +34,7 @@ i2cFunctionParam_t i2c_params_data = {
 		NULL,
 		0,
 		0,
+		0,
 		ST_I2C_INIT,
 		EV_I2C_NONE
 };
@@ -75,23 +76,25 @@ typedef struct {
 
 static stateTransMatrixRow_t I2C_stateTransMatrix[] = {
     // CURR STATE  v// EVENT           // NEXT STATE
-    { ST_I2C_INIT,		EV_I2C_INIT_DONE,		ST_I2C_IDLE  },
-    { ST_I2C_DMA_RX,	EV_I2C_DMA_RX_DONE,		ST_I2C_IDLE  },
-    { ST_I2C_DMA_TX,	EV_I2C_DMA_TX_DONE,		ST_I2C_IDLE  },
-    { ST_I2C_RX,     	EV_I2C_RX_DONE,			ST_I2C_IDLE  },
-    { ST_I2C_TX,		EV_I2C_TX_DONE,			ST_I2C_IDLE  },
-    { ST_I2C_IDLE,		EV_I2C_DMA_RX,			ST_I2C_DMA_RX  },
-    { ST_I2C_IDLE,		EV_I2C_DMA_TX,			ST_I2C_DMA_TX  },
-    { ST_I2C_IDLE,		EV_I2C_RX,				ST_I2C_RX  },
-    { ST_I2C_IDLE,		EV_I2C_TX,				ST_I2C_TX  },
-    { ST_I2C_INIT,		EV_I2C_ERROR,			ST_I2C_ERROR  },
-    { ST_I2C_DMA_RX,	EV_I2C_ERROR,			ST_I2C_ERROR  },
-    { ST_I2C_DMA_TX,	EV_I2C_ERROR,			ST_I2C_ERROR  },
-    { ST_I2C_RX,     	EV_I2C_ERROR,			ST_I2C_ERROR  },
-    { ST_I2C_TX,		EV_I2C_ERROR,			ST_I2C_ERROR  },
-    { ST_I2C_ERROR,		EV_I2C_NONE,			ST_I2C_IDLE  },
-    { ST_I2C_IDLE,		EV_I2C_NONE,			ST_I2C_IDLE  },
-	{ ST_I2C_INIT,		EV_I2C_NONE,			ST_I2C_INIT  }
+    { ST_I2C_INIT,		EV_I2C_INIT_DONE,			ST_I2C_IDLE  },
+    { ST_I2C_DMA_RX,	EV_I2C_DMA_RX_DONE,			ST_I2C_IDLE  },
+    { ST_I2C_DMA_TX,	EV_I2C_DMA_TX_DONE,			ST_I2C_IDLE  },
+	{ ST_I2C_DMA_TX,	EV_I2C_DMA_TX_RX_TX_DONE,	ST_I2C_DMA_RX  },
+    { ST_I2C_RX,     	EV_I2C_RX_DONE,				ST_I2C_IDLE  },
+    { ST_I2C_TX,		EV_I2C_TX_DONE,				ST_I2C_IDLE  },
+    { ST_I2C_IDLE,		EV_I2C_DMA_RX,				ST_I2C_DMA_RX  },
+    { ST_I2C_IDLE,		EV_I2C_DMA_TX,				ST_I2C_DMA_TX  },
+    { ST_I2C_IDLE,		EV_I2C_DMA_TX_RX,			ST_I2C_DMA_TX  },
+    { ST_I2C_IDLE,		EV_I2C_RX,					ST_I2C_RX  },
+    { ST_I2C_IDLE,		EV_I2C_TX,					ST_I2C_TX  },
+    { ST_I2C_INIT,		EV_I2C_ERROR,				ST_I2C_ERROR  },
+    { ST_I2C_DMA_RX,	EV_I2C_ERROR,				ST_I2C_ERROR  },
+    { ST_I2C_DMA_TX,	EV_I2C_ERROR,				ST_I2C_ERROR  },
+    { ST_I2C_RX,     	EV_I2C_ERROR,				ST_I2C_ERROR  },
+    { ST_I2C_TX,		EV_I2C_ERROR,				ST_I2C_ERROR  },
+    { ST_I2C_ERROR,		EV_I2C_NONE,				ST_I2C_IDLE  },
+    { ST_I2C_IDLE,		EV_I2C_NONE,				ST_I2C_IDLE  },
+	{ ST_I2C_INIT,		EV_I2C_NONE,				ST_I2C_INIT  }
 };
 
 
@@ -255,7 +258,7 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 
 void I2C_DMA_TX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Transmit_DMA(Params->i2cHandle, Params->address << 1, Params->buffer, Params->size)!= HAL_OK)
+	if(HAL_I2C_Master_Transmit_DMA(Params->i2cHandle, Params->address << 1, Params->buffer, Params->sizeTx)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Params->event = EV_I2C_ERROR;
@@ -265,7 +268,7 @@ void I2C_DMA_TX(i2cFunctionParam_t *Params)
 
 void I2C_DMA_RX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Receive_DMA(Params->i2cHandle, Params->address << 1, Params->buffer, Params->size) != HAL_OK)
+	if(HAL_I2C_Master_Receive_DMA(Params->i2cHandle, Params->address << 1, Params->buffer, Params->sizeRx) != HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Params->event = EV_I2C_ERROR;
@@ -275,7 +278,7 @@ void I2C_DMA_RX(i2cFunctionParam_t *Params)
 
 void I2C_TX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Transmit(Params->i2cHandle, Params->address << 1, Params->buffer, Params->size, Params->timeout)!= HAL_OK)
+	if(HAL_I2C_Master_Transmit(Params->i2cHandle, Params->address << 1, Params->buffer, Params->sizeTx, Params->timeout)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Params->event = EV_I2C_ERROR;
@@ -285,7 +288,7 @@ void I2C_TX(i2cFunctionParam_t *Params)
 
 void I2C_RX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Receive(Params->i2cHandle, Params->address << 1, Params->buffer, Params->size, Params->timeout)!= HAL_OK)
+	if(HAL_I2C_Master_Receive(Params->i2cHandle, Params->address << 1, Params->buffer, Params->sizeRx, Params->timeout)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Params->event = EV_I2C_ERROR;
@@ -334,7 +337,15 @@ void I2C_TX_RX_Done(i2cFunctionParam_t *data)
 
 	if (data->currState == ST_I2C_DMA_TX)
 	{
-		data->event = EV_I2C_DMA_TX_DONE;
+
+		if (data->event == EV_I2C_DMA_TX_RX)
+		{
+			data->event = EV_I2C_DMA_TX_RX_TX_DONE;
+		}
+		else
+		{
+			data->event = EV_I2C_DMA_TX_DONE;
+		}
 	}
 
 	if (data->currState == ST_I2C_TX)
@@ -376,7 +387,31 @@ void I2C_Error(i2cFunctionParam_t *data)
 	{
 		printf("i2c rx error");
 	}
-	data->event = EV_I2C_NONE;
+	//data->event = EV_I2C_NONE;
+}
+
+event_i2c_t read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uint8_t* buffer, uint16_t size)
+{
+	if(i2c_params_data.currState != ST_I2C_IDLE )
+	{
+
+	}
+	i2c_params_data.i2cHandle = i2cHandle;
+	i2c_params_data.buffer = &regs;
+	i2c_params_data.sizeTx = 1;
+	i2c_params_data.sizeRx = size;
+	i2c_params_data.address = addr;
+	i2c_params_data.event = EV_I2C_DMA_TX_RX;
+}
+
+event_i2c_t get_I2C_last_event(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
+{
+	return i2c_params_data.event;
+}
+
+state_i2c_t get_I2C_current_state(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
+{
+	return i2c_params_data.currState;
 }
 /* USER CODE END 1 */
 
