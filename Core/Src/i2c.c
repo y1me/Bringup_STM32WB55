@@ -41,7 +41,7 @@ i2cFunctionParam_t i2c_params_data = {
 
 /* USER CODE BEGIN Private Prototypes */
 void MX_I2C1_Init(i2cFunctionParam_t *);
-void I2C_DMA_TX(i2cFunctionParam_t *);
+//void I2C_DMA_TX(i2cFunctionParam_t *);
 void I2C_DMA_RX(i2cFunctionParam_t *);
 void I2C_TX(i2cFunctionParam_t *);
 void I2C_RX(i2cFunctionParam_t *);
@@ -392,6 +392,7 @@ void I2C_Error(i2cFunctionParam_t *data)
 
 event_i2c_t read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uint8_t* buffer, uint16_t size)
 {
+	/*
 	if(i2c_params_data.currState != ST_I2C_IDLE )
 	{
 
@@ -402,6 +403,7 @@ event_i2c_t read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uin
 	i2c_params_data.sizeRx = size;
 	i2c_params_data.address = addr;
 	i2c_params_data.event = EV_I2C_DMA_TX_RX;
+	*/
 }
 
 event_i2c_t get_I2C_last_event(I2C_HandleTypeDef* i2cHandle, uint8_t addr)

@@ -79,6 +79,7 @@ int ads101x_alert_init(ads101x_alert_t *dev,
 
 static int _ads101x_init_test(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
 {
+	/*
     uint8_t regs[2] = {ADS101X_CONF_ADDR,0};
 
     i2c_params_data.i2cHandle = i2cHandle;
@@ -88,7 +89,7 @@ static int _ads101x_init_test(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
     i2c_params_data.address = addr;
     i2c_params_data.event = EV_I2C_DMA_TX_RX;
     if
-
+*/
     /* Register read test */
     /*
     if (i2c_read_regs(i2c, addr, ADS101X_CONF_ADDR, &regs, 2, 0x0) < 0) {
