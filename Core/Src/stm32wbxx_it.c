@@ -203,21 +203,15 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  /* USER CODE BEGIN SysTick_IRQn 0 */
+	/* USER CODE BEGIN SysTick_IRQn 0 */
 	static int8_t count;
-  /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
-  /* USER CODE BEGIN SysTick_IRQn 1 */
-  if (count > 100)
-  {
-	  count = 0;
-  }
-  if (count == 80)
-  {
-	  Running_StateMachine_Iteration();
-  }
-  count++;
-  /* USER CODE END SysTick_IRQn 1 */
+	/* USER CODE END SysTick_IRQn 0 */
+	HAL_IncTick();
+	/* USER CODE BEGIN SysTick_IRQn 1 */
+
+	Running_StateMachine_Iteration();
+
+	/* USER CODE END SysTick_IRQn 1 */
 }
 
 /******************************************************************************/

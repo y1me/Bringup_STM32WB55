@@ -37,8 +37,8 @@ extern I2C_HandleTypeDef hi2c1;
 
 
 typedef enum {
-    ST_I2C_INIT,
     ST_I2C_IDLE,
+    ST_I2C_INIT,
 	ST_I2C_DMA_RX,
 	ST_I2C_DMA_TX,
 	ST_I2C_RX,

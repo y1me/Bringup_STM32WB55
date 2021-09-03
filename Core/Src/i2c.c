@@ -59,8 +59,8 @@ typedef struct {
 
 static stateFunctionRow_t I2C_stateFunction[] = {
         // NAME         // FUNC
+	{ "ST_I2C_IDLE",	NULL },
     { "ST_I2C_INIT",	MX_I2C1_Init},
-    { "ST_I2C_IDLE",	NULL },
     { "ST_I2C_DMA_RX",	I2C_DMA_RX },
     { "ST_I2C_DMA_TX",	I2C_DMA_TX },
     { "ST_I2C_RX",		I2C_RX },
@@ -396,20 +396,20 @@ void I2C_Error(i2cFunctionParam_t *data)
 	//data->event = EV_I2C_NONE;
 }
 
-event_i2c_t read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uint8_t* buffer, uint16_t size)
+int16_t read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uint8_t* buffer, uint16_t size)
 {
-	/*
+
 	if(i2c_params_data.currState != ST_I2C_IDLE )
 	{
 
 	}
 	i2c_params_data.i2cHandle = i2cHandle;
-	i2c_params_data.buffer = &regs;
+	i2c_params_data.buffer = buffer;
 	i2c_params_data.sizeTx = 1;
 	i2c_params_data.sizeRx = size;
 	i2c_params_data.address = addr;
 	i2c_params_data.event = EV_I2C_DMA_TX_RX;
-	*/
+
 }
 
 event_i2c_t get_I2C_last_event(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
