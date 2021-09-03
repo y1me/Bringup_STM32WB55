@@ -23,6 +23,7 @@
 #include "i2c.h"
 #include "gpio.h"
 #include "Utils/Commons.h"
+#include "Utils/types.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -91,58 +92,44 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-
   //MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   i2c_params_data.i2cHandle = &hi2c1;
   while (i2c_params_data.event != EV_I2C_INIT_DONE);
   i2c_params_data.buffer = aTxBuffer;
-  i2c_params_data.sizeTx = 3;
-  i2c_params_data.address = 0x49;
-  //i2c_params_data.event = EV_I2C_DMA_TX;
-
-  I2C_DMA_TX(&i2c_params_data);
-  //I2C_DMA_RX(&hi2c1, 0x49, aRxBuffer, 3);
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  //printf("Program start \n");
-  while (i2c_params_data.event != EV_I2C_DMA_TX_DONE && i2c_params_data.currState != ST_I2C_IDLE)
-  {
-	  i2c_params_data.sizeTx = 2;
-  }
-  while(1);
-  i2c_params_data.buffer = aTxBuffer;
-  i2c_params_data.sizeTx = 3;
+  i2c_params_data.sizeTx = 1;
   i2c_params_data.address = 0x49;
   i2c_params_data.event = EV_I2C_DMA_TX;
 
-  //I2C_DMA_TX(&hi2c1, 0x49, aTxBuffer, 3);
+  //I2C_DMA_TX(&i2c_params_data);
   //I2C_DMA_RX(&hi2c1, 0x49, aRxBuffer, 3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   //printf("Program start \n");
-  while (i2c_params_data.event != EV_I2C_DMA_TX_DONE && i2c_params_data.currState != ST_I2C_IDLE)
+  u32 i = 0;
+  while (i2c_params_data.event != EV_I2C_DMA_TX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
   {
-	  i2c_params_data.sizeTx = 2;
+	  i++;
   }
 
 
   i2c_params_data.event = EV_I2C_NONE;
   i2c_params_data.buffer = aRxBuffer;
-  i2c_params_data.sizeTx = 3;
+  i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
   i2c_params_data.event = EV_I2C_DMA_RX;
+  i=0;
+  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+    {
+  	  i++;
+    }
   while(1)
   {
     /* USER CODE END WHILE */
-	  if (i2c_params_data.event == EV_I2C_DMA_RX_DONE){
-		  i2c_params_data.event = EV_I2C_NONE;
-	  }
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

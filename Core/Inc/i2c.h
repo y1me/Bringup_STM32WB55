@@ -81,13 +81,12 @@ typedef struct {
 
 /* USER CODE END Private defines */
 
-
+//void MX_I2C1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
 void Running_StateMachine_Iteration(void);
 void I2C_RX_TX_DMA_ACK(void);
-void I2C_DMA_TX(i2cFunctionParam_t *);
 
 /* USER CODE END Prototypes */
 

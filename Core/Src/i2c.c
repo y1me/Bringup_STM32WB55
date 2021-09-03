@@ -41,7 +41,7 @@ i2cFunctionParam_t i2c_params_data = {
 
 /* USER CODE BEGIN Private Prototypes */
 void MX_I2C1_Init(i2cFunctionParam_t *);
-//void I2C_DMA_TX(i2cFunctionParam_t *);
+void I2C_DMA_TX(i2cFunctionParam_t *);
 void I2C_DMA_RX(i2cFunctionParam_t *);
 void I2C_TX(i2cFunctionParam_t *);
 void I2C_RX(i2cFunctionParam_t *);
@@ -101,11 +101,14 @@ static stateTransMatrixRow_t I2C_stateTransMatrix[] = {
 
 /* USER CODE END 0 */
 
-
+I2C_HandleTypeDef hi2c1;
+DMA_HandleTypeDef hdma_i2c1_rx;
+DMA_HandleTypeDef hdma_i2c1_tx;
 
 /* I2C1 init function */
 void MX_I2C1_Init(i2cFunctionParam_t* data)
 {
+
 	/* USER CODE BEGIN I2C1_Init 0 */
 	if (data->i2cHandle != 0)
 	{
@@ -115,7 +118,7 @@ void MX_I2C1_Init(i2cFunctionParam_t* data)
 
 		/* USER CODE END I2C1_Init 1 */
 		hi2c1.Instance = I2C1;
-		hi2c1.Init.Timing = 0x108083B5;
+		hi2c1.Init.Timing = 0x00802171;
 		hi2c1.Init.OwnAddress1 = 0;
 		hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
 		hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -314,8 +317,11 @@ void StateMachine_Iteration(i2cFunctionParam_t *data)
             	data->currState =  I2C_stateTransMatrix[i].nextState;
 
                 // Call the function associated with transition
-                (I2C_stateFunction[data->currState].func)(data);
-                break;
+            	if ( (I2C_stateFunction[data->currState].func) != NULL )
+            	{
+            		(I2C_stateFunction[data->currState].func)(data);
+            	}
+            	break;
             }
         }
     }
