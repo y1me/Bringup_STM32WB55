@@ -48,7 +48,7 @@
 
 /* USER CODE BEGIN PV */
 /* Buffer used for transmission */
-uint8_t aTxBuffer[8] = { 0x01, 0x85, 0x83, };
+uint8_t aTxBuffer[8] = { 0x01,  };
 /* Buffer used for reception */
 uint8_t aRxBuffer[8]= { 0x01, };
 /* USER CODE END PV */
@@ -99,8 +99,9 @@ int main(void)
   while (i2c_params_data.event != EV_I2C_INIT_DONE);
   i2c_params_data.buffer = aTxBuffer;
   i2c_params_data.sizeTx = 1;
+  i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
-  i2c_params_data.event = EV_I2C_DMA_TX;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
 
   //I2C_DMA_TX(&i2c_params_data);
   //I2C_DMA_RX(&hi2c1, 0x49, aRxBuffer, 3);
@@ -110,10 +111,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   //printf("Program start \n");
   u32 i = 0;
-  while (i2c_params_data.event != EV_I2C_DMA_TX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+  while ( i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
   {
 	  i++;
   }
+  while(1);
 
 
   i2c_params_data.event = EV_I2C_NONE;
