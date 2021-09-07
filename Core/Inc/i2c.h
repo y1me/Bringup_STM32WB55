@@ -78,6 +78,14 @@ typedef struct {
 	event_i2c_t event;
 } i2cFunctionParam_t;
 
+enum {
+    I2C_OK          =  0,       	/**< everything was fine */
+    I2C_FAIL       	= -1,       	/**< I2C command failed */
+	I2C_BUSY       	= -2,			/**< I2C module in use */
+	I2C_ERROR       = -3,			/**< I2C error */
+	I2C_LAST_ERR	= -4      		/**< I2C error on last use*/
+};
+
 
 /* USER CODE END Private defines */
 

@@ -401,25 +401,68 @@ int16_t read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uint8_t
 
 	if(i2c_params_data.currState != ST_I2C_IDLE )
 	{
-
+		goto error_busy;
 	}
 	i2c_params_data.i2cHandle = i2cHandle;
 	i2c_params_data.buffer = buffer;
 	i2c_params_data.sizeTx = 1;
 	i2c_params_data.sizeRx = size;
 	i2c_params_data.address = addr;
+	i2c_params_data.event = EV_I2C_DMA_RX;
+
+	error_busy :
+		return I2C_BUSY;
+
+	return I2C_OK;
+}
+
+int16_t write_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uint8_t* buffer, uint16_t size)
+{
+
+	if(i2c_params_data.currState != ST_I2C_IDLE )
+	{
+		goto error_busy;
+	}
+	i2c_params_data.i2cHandle = i2cHandle;
+	i2c_params_data.buffer = buffer;
+	i2c_params_data.sizeTx = size;
+	i2c_params_data.sizeRx = 1;
+	i2c_params_data.address = addr;
+	i2c_params_data.event = EV_I2C_DMA_TX;
+
+	error_busy :
+		return I2C_BUSY;
+
+	return I2C_OK;
+}
+
+int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uint8_t* buffer, uint16_t sizeTx, uint16_t sizeRx)
+{
+
+	if(i2c_params_data.currState != ST_I2C_IDLE )
+	{
+		goto error_busy;
+	}
+	i2c_params_data.i2cHandle = i2cHandle;
+	i2c_params_data.buffer = buffer;
+	i2c_params_data.sizeTx = sizeTx;
+	i2c_params_data.sizeRx = sizeRx;
+	i2c_params_data.address = addr;
 	i2c_params_data.event = EV_I2C_DMA_TX_RX;
 
+	error_busy :
+		return I2C_BUSY;
+
+	return I2C_OK;
 }
 
-event_i2c_t get_I2C_last_event(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
+int16_t get_I2C_status(i2cFunctionParam_t *data)
 {
-	return i2c_params_data.event;
-}
+	if(i2c_params_data.currState == ST_I2C_IDLE && i2c_params_data.event == EV_I2C_ERROR)
+	{
+		goto
+	}
 
-state_i2c_t get_I2C_current_state(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
-{
-	return i2c_params_data.currState;
 }
 /* USER CODE END 1 */
 
