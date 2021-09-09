@@ -79,11 +79,11 @@ typedef struct {
 } i2cFunctionParam_t;
 
 enum {
-    I2C_OK          =  0,       	/**< everything was fine */
+    I2C_OK          =  0,       	/**< I2C free */
     I2C_FAIL       	= -1,       	/**< I2C command failed */
 	I2C_BUSY       	= -2,			/**< I2C module in use */
 	I2C_ERROR       = -3,			/**< I2C error */
-	I2C_LAST_ERR	= -4      		/**< I2C error on last use*/
+	I2C_ERR_OCCUR	= -4      		/**< I2C error on last use*/
 };
 
 
@@ -95,6 +95,12 @@ enum {
 
 void Running_StateMachine_Iteration(void);
 void I2C_RX_TX_DMA_ACK(void);
+int16_t I2C_status(void);
+int16_t read_I2C_device_DMA(I2C_HandleTypeDef *, uint16_t , uint8_t * , uint16_t );
+int16_t write_I2C_device_DMA(I2C_HandleTypeDef *, uint16_t , uint8_t *, uint16_t );
+int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef *, uint16_t , uint8_t *, uint16_t , uint16_t );
+
+
 
 /* USER CODE END Prototypes */
 
