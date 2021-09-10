@@ -69,8 +69,8 @@ typedef enum {
 typedef struct {
 	I2C_HandleTypeDef* i2cHandle;
 	uint16_t address;
-	uint8_t* buffer;
-	//uint8_t* bufferRx;
+	uint8_t* bufferTx;
+	uint8_t* bufferRx;
 	uint16_t sizeTx;
 	uint16_t sizeRx;
 	uint32_t timeout;
@@ -93,12 +93,12 @@ enum {
 
 /* USER CODE BEGIN Prototypes */
 
-void Running_StateMachine_Iteration(void);
+void Running_I2C_StateMachine_Iteration(void);
 void I2C_RX_TX_DMA_ACK(void);
 int16_t I2C_status(void);
 int16_t read_I2C_device_DMA(I2C_HandleTypeDef *, uint16_t , uint8_t * , uint16_t );
 int16_t write_I2C_device_DMA(I2C_HandleTypeDef *, uint16_t , uint8_t *, uint16_t );
-int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef *, uint16_t , uint8_t *, uint16_t , uint16_t );
+int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef *, uint16_t , uint8_t *, uint8_t *, uint16_t , uint16_t );
 
 
 

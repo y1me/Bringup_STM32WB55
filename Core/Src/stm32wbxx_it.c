@@ -209,7 +209,7 @@ void SysTick_Handler(void)
 	HAL_IncTick();
 	/* USER CODE BEGIN SysTick_IRQn 1 */
 
-	Running_StateMachine_Iteration();
+	Running_I2C_StateMachine_Iteration();
 
 	/* USER CODE END SysTick_IRQn 1 */
 }

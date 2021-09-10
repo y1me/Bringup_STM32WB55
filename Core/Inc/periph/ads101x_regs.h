@@ -84,6 +84,18 @@ extern "C" {
 /** @} */
 
 /**
+ * @name    ADS101x/111x operation mode
+ *
+ * Determines how quickly samples are taken (even on one-shot mode)
+ *
+ * @{
+ */
+#define ADS101X_MODE_MASK     ((1 << 8))
+#define ADS101X_MODE_SSM      ((1 << 8))
+#define ADS101X_MODE_CON      ((0 << 8))
+/** @} */
+
+/**
  * @name    ADS101x/111x data rate settings
  *
  * Determines how quickly samples are taken (even on one-shot mode)
@@ -91,13 +103,15 @@ extern "C" {
  * @{
  */
 #define ADS101X_DATAR_MASK    ((1 << 7) | (1 << 6) | (1 << 5))
-#define ADS101X_DATAR_128     ((0 << 7) | (0 << 6) | (0 << 5))
-#define ADS101X_DATAR_250     ((0 << 7) | (0 << 6) | (1 << 5))
-#define ADS101X_DATAR_490     ((0 << 7) | (1 << 6) | (0 << 5))
-#define ADS101X_DATAR_920     ((0 << 7) | (1 << 6) | (1 << 5))
-#define ADS101X_DATAR_1600    ((1 << 7) | (0 << 6) | (0 << 5))
-#define ADS101X_DATAR_2400    ((1 << 7) | (0 << 6) | (1 << 5))
-#define ADS101X_DATAR_3300    ((1 << 7) | (1 << 6) | (0 << 5))
+#define ADS101X_DATAR_8       ((0 << 7) | (0 << 6) | (0 << 5))
+#define ADS101X_DATAR_16      ((0 << 7) | (0 << 6) | (1 << 5))
+#define ADS101X_DATAR_32      ((0 << 7) | (1 << 6) | (0 << 5))
+#define ADS101X_DATAR_64      ((0 << 7) | (1 << 6) | (1 << 5))
+#define ADS101X_DATAR_128     ((1 << 7) | (0 << 6) | (0 << 5))
+#define ADS101X_DATAR_250     ((1 << 7) | (0 << 6) | (1 << 5))
+#define ADS101X_DATAR_475     ((1 << 7) | (1 << 6) | (0 << 5))
+#define ADS101X_DATAR_860     ((1 << 7) | (1 << 6) | (1 << 5))
+/** @} */
 
 #ifdef __cplusplus
 }

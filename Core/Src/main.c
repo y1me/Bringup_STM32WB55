@@ -97,7 +97,7 @@ int main(void)
 
   i2c_params_data.i2cHandle = &hi2c1;
   while (i2c_params_data.event != EV_I2C_INIT_DONE);
-  i2c_params_data.buffer = aTxBuffer;
+  i2c_params_data.bufferTx = aTxBuffer;
   i2c_params_data.sizeTx = 1;
   i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
@@ -119,7 +119,7 @@ int main(void)
 
 
   i2c_params_data.event = EV_I2C_NONE;
-  i2c_params_data.buffer = aRxBuffer;
+  i2c_params_data.bufferRx = aRxBuffer;
   i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
   i2c_params_data.event = EV_I2C_DMA_RX;

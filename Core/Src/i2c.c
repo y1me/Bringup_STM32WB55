@@ -32,6 +32,7 @@ i2cFunctionParam_t i2c_params_data = {
 		NULL,
 		0,
 		NULL,
+		NULL,
 		0,
 		0,
 		0,
@@ -149,7 +150,8 @@ void MX_I2C1_Init(i2cFunctionParam_t* data)
 		/* USER CODE BEGIN I2C1_Init 2 */
 		data->currState = ST_I2C_IDLE;
 		data->event = EV_I2C_INIT_DONE;
-		data->buffer= NULL;
+		data->bufferTx= NULL;
+		data->bufferRx= NULL;
 	}
 	/* USER CODE END I2C1_Init 2 */
 
@@ -262,7 +264,7 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 
 void I2C_DMA_TX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Transmit_DMA(Params->i2cHandle, Params->address << 1, Params->buffer, Params->sizeTx)!= HAL_OK)
+	if(HAL_I2C_Master_Transmit_DMA(Params->i2cHandle, Params->address << 1, Params->bufferTx, Params->sizeTx)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Params->event = EV_I2C_ERROR;
@@ -272,7 +274,7 @@ void I2C_DMA_TX(i2cFunctionParam_t *Params)
 
 void I2C_DMA_RX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Receive_DMA(Params->i2cHandle, Params->address << 1, Params->buffer, Params->sizeRx) != HAL_OK)
+	if(HAL_I2C_Master_Receive_DMA(Params->i2cHandle, Params->address << 1, Params->bufferRx, Params->sizeRx) != HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Params->event = EV_I2C_ERROR;
@@ -282,7 +284,7 @@ void I2C_DMA_RX(i2cFunctionParam_t *Params)
 
 void I2C_TX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Transmit(Params->i2cHandle, Params->address << 1, Params->buffer, Params->sizeTx, Params->timeout)!= HAL_OK)
+	if(HAL_I2C_Master_Transmit(Params->i2cHandle, Params->address << 1, Params->bufferTx, Params->sizeTx, Params->timeout)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Params->event = EV_I2C_ERROR;
@@ -292,7 +294,7 @@ void I2C_TX(i2cFunctionParam_t *Params)
 
 void I2C_RX(i2cFunctionParam_t *Params)
 {
-	if(HAL_I2C_Master_Receive(Params->i2cHandle, Params->address << 1, Params->buffer, Params->sizeRx, Params->timeout)!= HAL_OK)
+	if(HAL_I2C_Master_Receive(Params->i2cHandle, Params->address << 1, Params->bufferRx, Params->sizeRx, Params->timeout)!= HAL_OK)
 	{
 		/* Error_Handler() function is called when error occurs. */
 		Params->event = EV_I2C_ERROR;
@@ -300,7 +302,7 @@ void I2C_RX(i2cFunctionParam_t *Params)
 	}
 }
 
-void Running_StateMachine_Iteration(void)
+void Running_I2C_StateMachine_Iteration(void)
 {
 	StateMachine_Iteration(&i2c_params_data);
 }
@@ -405,7 +407,7 @@ int16_t read_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_t
 		goto error_busy;
 	}
 	i2c_params_data.i2cHandle = i2cHandle;
-	i2c_params_data.buffer = buffer;
+	i2c_params_data.bufferRx = buffer;
 	i2c_params_data.sizeTx = 1;
 	i2c_params_data.sizeRx = size;
 	i2c_params_data.address = addr;
@@ -425,7 +427,7 @@ int16_t write_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_
 		goto error_busy;
 	}
 	i2c_params_data.i2cHandle = i2cHandle;
-	i2c_params_data.buffer = buffer;
+	i2c_params_data.bufferTx = buffer;
 	i2c_params_data.sizeTx = size;
 	i2c_params_data.sizeRx = 1;
 	i2c_params_data.address = addr;
@@ -437,7 +439,7 @@ int16_t write_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_
 	return I2C_OK;
 }
 
-int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, uint8_t* buffer, uint16_t sizeTx, uint16_t sizeRx)
+int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_t *bufferTx, uint8_t *bufferRx, uint16_t sizeTx, uint16_t sizeRx)
 {
 
 	if(i2c_params_data.currState != ST_I2C_IDLE )
@@ -445,7 +447,8 @@ int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, u
 		goto error_busy;
 	}
 	i2c_params_data.i2cHandle = i2cHandle;
-	i2c_params_data.buffer = buffer;
+	i2c_params_data.bufferTx = bufferTx;
+	i2c_params_data.bufferRx = bufferRx;
 	i2c_params_data.sizeTx = sizeTx;
 	i2c_params_data.sizeRx = sizeRx;
 	i2c_params_data.address = addr;
@@ -460,6 +463,11 @@ int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef* i2cHandle, uint16_t addr, u
 int16_t I2C_status(void)
 {
 	return get_I2C_status(&i2c_params_data);
+}
+
+int16_t I2C_clear_last_op(void)
+{
+	return 1;
 }
 
 int16_t get_I2C_status(i2cFunctionParam_t *data)
@@ -482,7 +490,7 @@ int16_t get_I2C_status(i2cFunctionParam_t *data)
 		return I2C_ERR_OCCUR;
 
 	error_pending :
-		return I2C_ERR_OCCUR;
+		return I2C_ERROR;
 
 	error_busy :
 		return I2C_BUSY;

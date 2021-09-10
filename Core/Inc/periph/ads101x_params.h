@@ -41,8 +41,8 @@ extern "C" {
 #define ADS101X_PARAM_ADDR       (CONFIG_ADS101X_I2C_ADDRESS)
 #endif
 #ifndef ADS101X_PARAM_MUX_GAIN
-#define ADS101X_PARAM_MUX_GAIN   (ADS101X_AIN0_DIFFM_AIN1 \
-                                  | ADS101X_PGA_FSR_2V048)
+#define ADS101X_PARAM_MUX_GAIN   (ADS101X_AIN0_SINGM \
+                                  | ADS101X_PGA_FSR_4V096)
 #endif
 
 #ifndef ADS101X_PARAM_ALERT_STATUS

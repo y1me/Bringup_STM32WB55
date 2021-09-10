@@ -108,6 +108,17 @@ enum {
 };
 
 /**
+ * @brief   ADS101x/111x input data
+ */
+typedef struct ads101x_data {
+	uint8_t config[2];					/**< data from config register */
+	uint8_t ain0[2];					/**< data from single-ended input AIN0 */
+	uint8_t ain1[2];					/**< data from single-ended input AIN1 */
+	uint8_t ain2[2];					/**< data from single-ended input AIN2 */
+	uint8_t ain3[2];					/**< data from single-ended input AIN3 */
+} ads101x_data_t;
+
+/**
  * @brief   ADS101x/111x params
  */
 typedef struct ads101x_params {
@@ -156,7 +167,7 @@ typedef struct ads101x_alert {
  *
  * @return zero on successful initialization, non zero on error
  */
-int ads101x_init(ads101x_t *dev, const ads101x_params_t *params);
+int ads101x_init(ads101x_params_t *, uint8_t *);
 
 /**
  * @brief   Initialize an ADS101x/111x alert device
@@ -190,7 +201,7 @@ int ads101x_set_mux_gain(const ads101x_t *dev, uint8_t mux_gain);
  *
  * @return zero on successful read, non zero on error
  */
-int ads101x_read_raw(const ads101x_t *dev, int16_t *raw);
+int ads101x_read_raw(const ads101x_params_t *, ads101x_data_t *);
 
 /**
  * @brief   Enable alert interrupt

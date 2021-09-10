@@ -44,21 +44,26 @@
 //#define DEV (dev->params.i2c)
 //#define ADDR (dev->params.addr)
 
-static int _ads101x_init_test(I2C_HandleTypeDef* i2cHandle, uint8_t addr);
+static int _ads101x_init(const ads101x_params_t *params);
 /* Buffer used for transmission */
 uint8_t aTxBuffer[ADS101X_BUFFER_SIZE];
 
 /* Buffer used for reception */
 uint8_t aRxBuffer[ADS101X_BUFFER_SIZE];
 
+ads101x_data_t data_input;
 
-int ads101x_init(ads101x_t *dev, const ads101x_params_t *params)
+int ads101x_init(ads101x_params_t *params, uint8_t *dataRx)
 {
-    assert(dev && params);
-
-    dev->params = *params;
-
-    //return _ads101x_init_test(DEV, ADDR);
+	uint8_t Txregs[3] = {ADS101X_CONF_ADDR,
+			ADS101X_AIN0_SINGM
+			| ADS101X_PGA_FSR_4V096
+			| ADS101X_MODE_CON,
+			ADS101X_DATAR_128
+			| ADS101X_CONF_COMP_DIS
+			};
+	params->mux_gain = Txregs[1];
+	return write_read_I2C_device_DMA(params->i2cHandle, params->addr, Txregs, dataRx, 3, 2);
 }
 
 int ads101x_alert_init(ads101x_alert_t *dev,
@@ -77,113 +82,63 @@ int ads101x_alert_init(ads101x_alert_t *dev,
     //return _ads101x_init_test(DEV, ADDR);
 }
 
-static int _ads101x_init_test(I2C_HandleTypeDef* i2cHandle, uint8_t addr)
+int ads101x_rotate_mux_gain(ads101x_params_t *params, uint8_t *dataRx)
 {
-	/*
-    uint8_t regs[2] = {ADS101X_CONF_ADDR,0};
+	uint8_t Txregs[3] = {ADS101X_CONF_ADDR,
+			ADS101X_MUX_MASK
+			| ADS101X_PGA_MASK
+			| ADS101X_MODE_CON,
+			ADS101X_DATAR_128
+			| ADS101X_CONF_COMP_DIS
+			};
 
-    i2c_params_data.i2cHandle = i2cHandle;
-    i2c_params_data.buffer = &regs;
-    i2c_params_data.sizeTx = 1;
-    i2c_params_data.sizeRx = 2;
-    i2c_params_data.address = addr;
-    i2c_params_data.event = EV_I2C_DMA_TX_RX;
-    if
-*/
-    /* Register read test */
-    /*
-    if (i2c_read_regs(i2c, addr, ADS101X_CONF_ADDR, &regs, 2, 0x0) < 0) {
-        DEBUG("[ads101x] init - error: unable to read reg %x\n",
-              ADS101X_CONF_ADDR);
-        i2c_release(i2c);
-        return ADS101X_NODEV;
-    }
+	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN0_SINGM)
+	{
+		params->mux_gain |= ADS101X_MUX_MASK;
+		params->mux_gain &= ADS101X_AIN1_SINGM;
+	}
 
-    regs[1] = (regs[1] & ~ADS101X_DATAR_MASK) | ADS101X_DATAR_3300;
+	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN1_SINGM)
+		{
+			params->mux_gain |= ADS101X_MUX_MASK;
+			params->mux_gain &= ADS101X_AIN2_SINGM;
+		}
 
-    /* Register write test */
-    /*
-    if (i2c_write_regs(i2c, addr, ADS101X_CONF_ADDR, &regs, 2, 0x0) < 0) {
-        DEBUG("[ads101x] init - error: unable to write reg %x\n",
-              ADS101X_CONF_ADDR);
-        i2c_release(i2c);
-        return ADS101X_NODEV;
-    }
+	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN2_SINGM)
+			{
+				params->mux_gain |= ADS101X_MUX_MASK;
+				params->mux_gain &= ADS101X_AIN3_SINGM;
+			}
+	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN3_SINGM)
+			{
+//event to init
+//avoid i2c sending?
+			}
 
-    i2c_read_regs(i2c, addr, ADS101X_CONF_ADDR, &regs, 2, 0x0);
-
-    i2c_release(i2c);
-
-    /* Write should have actually written the register */
-    /*
-    if ((regs[1] & ADS101X_DATAR_MASK) != ADS101X_DATAR_3300) {
-        DEBUG("[ads101x] init - error: unable to set reg (reg=%x)\n", regs[1]);
-        return ADS101X_NODEV;
-    }
-*/
-    return ADS101X_OK;
-}
-
-int ads101x_set_mux_gain(const ads101x_t *dev, uint8_t mux_gain)
-{
-  /*
-	uint8_t regs[2];
-
-    i2c_acquire(DEV);
-
-    i2c_read_regs(DEV, ADDR, ADS101X_CONF_ADDR, &regs, 2, 0x0);
-
-    /* Zero mux and gain */
-    /*
-	regs[0] &= ~ADS101X_MUX_MASK;
-    regs[0] &= ~ADS101X_PGA_MASK;
-
-    /* Write mux and gain */
-    /*
-	regs[0] |= mux_gain;
-
-    i2c_write_regs(DEV, ADDR, ADS101X_CONF_ADDR, &regs, 2, 0x0);
-
-    i2c_release(DEV);
-    */
-    return ADS101X_OK;
+	return write_read_I2C_device_DMA(params->i2cHandle, params->addr, Txregs, dataRx, 3, 2);
 
 }
 
-int ads101x_read_raw(const ads101x_t *dev, int16_t *raw)
+int ads101x_read_raw(const ads101x_params_t *params, ads101x_data_t *data)
 {
-	/*
-    uint8_t regs[2];
-
-    i2c_acquire(DEV);
-
-    /* Read control register */
-	/*
-    i2c_read_regs(DEV, ADDR, ADS101X_CONF_ADDR, &regs, 2, 0x0);
-
-    /* Tell the ADC to acquire a single-shot sample */
-	/*
-    regs[0] |= ADS101X_CONF_OS_CONV;
-    i2c_write_regs(DEV, ADDR, ADS101X_CONF_ADDR, &regs, 2, 0x0);
-
-    /* Wait for the sample to be acquired */
-	/*
-    xtimer_usleep(ADS101X_READ_DELAY);
-
-    /* Read the sample */
-	/*
-    if (i2c_read_regs(DEV, ADDR, ADS101X_CONV_RES_ADDR, &regs, 2, 0x0) < 0) {
-        i2c_release(DEV);
-        return ADS101X_NODATA;
-    }
-
-    i2c_release(DEV);
-
-    /* If all okay, change raw value */
-	/*
-    *raw = (int16_t)(regs[0] << 8) | (int16_t)(regs[1]);
-*/
-    return ADS101X_OK;
+	uint8_t *dataRx;
+	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN0_SINGM)
+	{
+		dataRx = data->ain0;
+	}
+	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN1_SINGM)
+	{
+		dataRx = data->ain1;
+	}
+	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN2_SINGM)
+	{
+		dataRx = data->ain2;
+	}
+	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN3_SINGM)
+	{
+		dataRx = data->ain3;
+	}
+	return read_I2C_device_DMA(params->i2cHandle, params->addr, dataRx, 2);
 }
 
 int ads101x_enable_alert(ads101x_alert_t *dev,
