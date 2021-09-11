@@ -103,8 +103,9 @@ extern I2C_HandleTypeDef hi2c1;
 enum {
     ADS101X_OK          =  0,       	/**< everything was fine */
     ADS101X_NOI2C       = -1,       	/**< I2C communication failed */
-    ADS101X_NODEV       = -2,       	/**< no ADS101X device found on the bus */
-    ADS101X_NODATA      = -3        	/**< no data available */
+	ADS101X_I2CBUSY     = -2,       	/**< I2C communication failed */
+    ADS101X_NODEV       = -3,       	/**< no ADS101X device found on the bus */
+    ADS101X_NODATA      = -4        	/**< no data available */
 };
 
 /**

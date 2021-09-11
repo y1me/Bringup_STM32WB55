@@ -460,42 +460,52 @@ int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, u
 	return I2C_OK;
 }
 
+int16_t clear_I2C_last_event(i2cFunctionParam_t *data)
+{
+	data->event = EV_I2C_NONE;
+	return 0;
+}
+
+int16_t I2C_clear_last_event(void)
+{
+	return clear_I2C_last_event(&i2c_params_data);
+}
+
 int16_t I2C_status(void)
 {
 	return get_I2C_status(&i2c_params_data);
 }
 
-int16_t I2C_clear_last_op(void)
-{
-	return 1;
-}
-
 int16_t get_I2C_status(i2cFunctionParam_t *data)
 {
+	int16_t ret = I2C_OK;
+
 	if(data->currState == ST_I2C_IDLE && data->event == EV_I2C_ERROR)
 	{
-		goto error_idle;
+		ret = I2C_ERR_OCCUR;
+		goto out;
 	}
 
 	if(data->currState == ST_I2C_ERROR )
 	{
-		goto error_pending;
+		ret = I2C_ERROR;
+		goto out;
 	}
 
 	if(data->currState != ST_I2C_IDLE )
 	{
-		goto error_busy;
+		ret = I2C_BUSY;
+		goto out;
 	}
-	error_idle :
-		return I2C_ERR_OCCUR;
 
-	error_pending :
-		return I2C_ERROR;
+	if(data->currState == ST_I2C_IDLE && data->event == EV_I2C_NONE)
+	{
+		ret = I2C_FREE;
+		goto out;
+	}
 
-	error_busy :
-		return I2C_BUSY;
-
-	return I2C_OK;
+	out :
+	return ret;
 }
 /* USER CODE END 1 */
 
