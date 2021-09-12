@@ -55,24 +55,19 @@ ads101x_data_t data_input;
 
 int ads101x_init(ads101x_params_t *params, uint8_t *dataRx)
 {
-	if (I2C_status() == I2C_FREE)
+	int ret;
+	if (I2C_status() != I2C_FREE)
 	{
-		ADS101X_I2CBUSY
-		goto error_busy;
+		ret = ADS101X_I2CBUSY;
+		goto out;
 	}
-	uint8_t Txregs[3] = {ADS101X_CONF_ADDR,
-			ADS101X_AIN0_SINGM
-			| ADS101X_PGA_FSR_4V096
-			| ADS101X_MODE_CON,
-			ADS101X_DATAR_128
-			| ADS101X_CONF_COMP_DIS
-	};
+	uint8_t Txregs[3] = ADS101X_INIT_PARAMS;
 	params->mux_gain = Txregs[1];
 
-	error_busy :
-		return ADS101X_I2CBUSY;
 
-	return write_read_I2C_device_DMA(params->i2cHandle, params->addr, Txregs, dataRx, 3, 2);
+	ret = write_read_I2C_device_DMA(params->i2cHandle, params->addr, Txregs, dataRx, 3, 2);
+	out :
+	return ret;
 }
 
 int ads101x_alert_init(ads101x_alert_t *dev,

@@ -56,6 +56,15 @@ extern "C" {
 #define ADS101X_PARAM_HIGH_LIMIT (20000U)
 #endif
 
+#ifndef ADS101X_INIT_PARAMS
+#define ADS101X_INIT_PARAMS     { ADS101X_CONF_ADDR, \
+                                  ADS101X_AIN0_SINGM \
+                                  | ADS101X_PGA_FSR_4V096 \
+                                  | ADS101X_MODE_CON, \
+                                  ADS101X_DATAR_128 \
+                                  | ADS101X_CONF_COMP_DIS }
+#endif
+
 #ifndef ADS101X_PARAMS
 #define ADS101X_PARAMS          { .i2cHandle        = ADS101X_PARAM_I2C,\
                                   .addr       		= ADS101X_PARAM_ADDR,\
