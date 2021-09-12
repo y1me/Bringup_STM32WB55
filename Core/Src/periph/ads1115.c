@@ -46,7 +46,7 @@
 
 static int _ads101x_init(const ads101x_params_t *params);
 
-void StateMachine_Iteration(ads1115FunctionParam_t *);
+void StateMachine_Iteration(ads101x_params_t *);
 /* USER CODE END Private Prototypes */
 
 typedef struct {

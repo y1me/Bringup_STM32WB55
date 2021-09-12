@@ -137,9 +137,13 @@ enum {
 typedef struct ads101x_data {
 	uint8_t config[2];					/**< data from config register */
 	uint8_t ain0[2];					/**< data from single-ended input AIN0 */
+	uint8_t ain0_prev[2];				/**< previous data from single-ended input AIN0 */
 	uint8_t ain1[2];					/**< data from single-ended input AIN1 */
+	uint8_t ain1_prev[2];				/**< previous data from single-ended input AIN1 */
 	uint8_t ain2[2];					/**< data from single-ended input AIN2 */
+	uint8_t ain2_prev[2];				/**< previous data from single-ended input AIN2 */
 	uint8_t ain3[2];					/**< data from single-ended input AIN3 */
+	uint8_t ain3_prev[2];				/**< previous data from single-ended input AIN3 */
 } ads101x_data_t;
 
 /**
