@@ -401,10 +401,11 @@ void I2C_Error(i2cFunctionParam_t *data)
 
 int16_t read_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_t *buffer, uint16_t size)
 {
-
+	int16_t ret = I2C_OK;
 	if(i2c_params_data.currState != ST_I2C_IDLE )
 	{
-		goto error_busy;
+		ret = I2C_BUSY;
+		goto out;
 	}
 	i2c_params_data.i2cHandle = i2cHandle;
 	i2c_params_data.bufferRx = buffer;
@@ -413,18 +414,17 @@ int16_t read_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_t
 	i2c_params_data.address = addr;
 	i2c_params_data.event = EV_I2C_DMA_RX;
 
-	error_busy :
-		return I2C_BUSY;
-
-	return I2C_OK;
+	out :
+		return ret;
 }
 
 int16_t write_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_t *buffer, uint16_t size)
 {
-
+	int16_t ret = I2C_OK;
 	if(i2c_params_data.currState != ST_I2C_IDLE )
 	{
-		goto error_busy;
+		ret = I2C_BUSY;
+		goto out;
 	}
 	i2c_params_data.i2cHandle = i2cHandle;
 	i2c_params_data.bufferTx = buffer;
@@ -433,18 +433,17 @@ int16_t write_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_
 	i2c_params_data.address = addr;
 	i2c_params_data.event = EV_I2C_DMA_TX;
 
-	error_busy :
-		return I2C_BUSY;
-
-	return I2C_OK;
+	out :
+		return ret;
 }
 
 int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_t *bufferTx, uint8_t *bufferRx, uint16_t sizeTx, uint16_t sizeRx)
 {
-
+	int16_t ret = I2C_OK;
 	if(i2c_params_data.currState != ST_I2C_IDLE )
 	{
-		goto error_busy;
+		ret = I2C_BUSY;
+		goto out;
 	}
 	i2c_params_data.i2cHandle = i2cHandle;
 	i2c_params_data.bufferTx = bufferTx;
@@ -454,10 +453,8 @@ int16_t write_read_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, u
 	i2c_params_data.address = addr;
 	i2c_params_data.event = EV_I2C_DMA_TX_RX;
 
-	error_busy :
-		return I2C_BUSY;
-
-	return I2C_OK;
+	out :
+		return ret;
 }
 
 int16_t clear_I2C_last_event(i2cFunctionParam_t *data)
