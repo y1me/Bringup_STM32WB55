@@ -45,6 +45,38 @@
 //#define ADDR (dev->params.addr)
 
 static int _ads101x_init(const ads101x_params_t *params);
+
+void StateMachine_Iteration(ads1115FunctionParam_t *);
+/* USER CODE END Private Prototypes */
+
+typedef struct {
+    const char * name;
+    void (* const func)(ads1115FunctionParam_t *);
+} stateFunctionRow_t;
+
+static stateFunctionRow_t ADS1115_stateFunction[] = {
+        // NAME         // FUNC
+	{ "ST_ADS1115_INIT",	NULL },
+    { "ST_ADS1115_MUX",	MX_I2C1_Init},
+    { "ST_ADS1115_CONV",	I2C_DMA_RX },
+    { "ST_ADS1115_ERROR",	I2C_DMA_TX }
+};
+
+typedef struct {
+	state_ads1115_t currState;
+    event_ads1115_t event;
+    state_ads1115_t nextState;
+} stateTransMatrixRow_t;
+
+static stateTransMatrixRow_t ADS1115_stateTransMatrix[] = {
+    // CURR STATE  v// EVENT           // NEXT STATE
+    { ST_ADS1115_INIT,	EV_ADS1115_INIT_DONE,		ST_ADS1115_CONV  },
+    { ST_ADS1115_CONV,	EV_ADS1115_1ST_CONV_DONE,	ST_ADS1115_CONV  },
+    { ST_ADS1115_CONV,	EV_ADS1115_2ND_CONV_DONE,	ST_ADS1115_MUX },
+	{ ST_ADS1115_MUX,	EV_ADS1115_MUX_DONE,		ST_ADS1115_CONV  },
+    { ST_ADS1115_CONV,  EV_ADS1115_DO_INIT,			ST_ADS1115_INIT  }
+};
+
 /* Buffer used for transmission */
 uint8_t aTxBuffer[ADS101X_BUFFER_SIZE];
 

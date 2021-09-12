@@ -97,6 +97,29 @@ extern I2C_HandleTypeDef hi2c1;
 #define CONFIG_ADS101X_I2C_ADDRESS    (0x49)
 #endif
 /** @} */
+
+/* Begin ADS1115 state machine structures */
+typedef enum {
+    ST_ADS1115_INIT,
+	ST_ADS1115_MUX,
+	ST_ADS1115_CONV,
+	ST_ADS1115_ERROR
+} state_ads1115_t;
+
+//typedef struct {
+//	state_i2c_t currState;
+//} i2c_stateMachine_t;
+
+typedef enum {
+	EV_ADS1115_DO_INIT,
+    EV_ADS1115_INIT_DONE,
+	EV_ADS1115_MUX_DONE,
+	EV_ADS1115_1ST_CONV_DONE,
+	EV_ADS1115_2ND_CONV_DONE
+} event_ads1115_t;
+
+/* End ADS1115 state machine structures */
+
 /**
  * @brief   Named return values
  */
@@ -126,6 +149,8 @@ typedef struct ads101x_params {
 	I2C_HandleTypeDef* i2cHandle;		/**< i2c device */
     uint8_t addr;						/**< i2c address */
     uint8_t mux_gain;					/**< Mux and gain boolean settings */
+	state_ads1115_t currState;
+	event_ads1115_t event;
 } ads101x_params_t;
 
 /**

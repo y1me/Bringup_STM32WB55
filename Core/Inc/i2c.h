@@ -35,7 +35,7 @@ extern I2C_HandleTypeDef hi2c1;
 
 /* USER CODE BEGIN Private defines */
 
-
+/* Begin I2C state machine structures */
 typedef enum {
     ST_I2C_IDLE,
     ST_I2C_INIT,
@@ -46,9 +46,9 @@ typedef enum {
 	ST_I2C_ERROR
 } state_i2c_t;
 
-typedef struct {
-	state_i2c_t currState;
-} i2c_stateMachine_t;
+//typedef struct {
+//	state_i2c_t currState;
+//} i2c_stateMachine_t;
 
 typedef enum {
     EV_I2C_INIT_DONE,
@@ -65,6 +65,8 @@ typedef enum {
 	EV_I2C_ERROR,
 	EV_I2C_NONE
 } event_i2c_t;
+
+/* End I2C state machine structures */
 
 typedef struct {
 	I2C_HandleTypeDef* i2cHandle;
