@@ -135,7 +135,7 @@ enum {
  * @brief   ADS101x/111x input data
  */
 typedef struct ads101x_data {
-	uint8_t config[2];					/**< data from config register */
+	uint8_t config[3];					/**< data from config register */
 	uint8_t ain0[2];					/**< data from single-ended input AIN0 */
 	uint8_t ain0_prev[2];				/**< previous data from single-ended input AIN0 */
 	uint8_t ain1[2];					/**< data from single-ended input AIN1 */
@@ -189,49 +189,6 @@ typedef struct ads101x_alert {
     void *arg;                        /**< alert callback param */
 } ads101x_alert_t;
 
-/**
- * @brief   Initialize an ADS101x/111x ADC device (ADC only)
- *
- * @param[in,out] dev  device descriptor
- * @param[in] params   device configuration
- *
- * @return zero on successful initialization, non zero on error
- */
-int ads101x_init(ads101x_params_t *, uint8_t *);
-
-/**
- * @brief   Initialize an ADS101x/111x alert device
- *
- * @param[in,out] dev  device descriptor
- * @param[in] params   device configuration
- *
- * @return zero on successful initialization, non zero on error
- */
-int ads101x_alert_init(ads101x_alert_t *dev,
-                       const ads101x_alert_params_t *params);
-
-/**
- * @brief   Set mux and gain
- *
- * Mux settings have no effect on ADS1013-4 and ADS1113-4.
- * Gain settings have no effect on ADS1013 and ADS1113.
- *
- * @param[in] dev       device descriptor
- * @param[in] mux_gain  mux and gain boolean values
- *
- * @return zero on successful read, non zero on error
- */
-int ads101x_set_mux_gain(const ads101x_t *dev, uint8_t mux_gain);
-
-/**
- * @brief   Read a raw ADC value
- *
- * @param[in] dev   device descriptor
- * @param[out] raw  read value
- *
- * @return zero on successful read, non zero on error
- */
-int ads101x_read_raw(const ads101x_params_t *, ads101x_data_t *);
 
 /**
  * @brief   Enable alert interrupt
