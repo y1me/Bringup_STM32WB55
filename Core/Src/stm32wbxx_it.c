@@ -26,6 +26,7 @@
 #include "gpio.h"
 #include "i2c.h"
 #include "stddef.h"
+#include "periph/ads101x.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,7 +69,7 @@ static PFV_EXTI pf_ext_int[]=
 				NULL,
 				NULL,
 				NULL,
-				NULL,
+				conv_ready,
 				NULL,
 				TOGGLE_GPIO_LED2,
 				NULL,
@@ -210,6 +211,7 @@ void SysTick_Handler(void)
 	/* USER CODE BEGIN SysTick_IRQn 1 */
 
 	Running_I2C_StateMachine_Iteration();
+	Running_ADS115_StateMachine_Iteration();
 
 	/* USER CODE END SysTick_IRQn 1 */
 }
@@ -250,14 +252,14 @@ void EXTI3_IRQHandler(void)
   */
 void DMA1_Channel1_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+	/* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
 
-  /* USER CODE END DMA1_Channel1_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_i2c1_rx);
-  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+	/* USER CODE END DMA1_Channel1_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_i2c1_rx);
+	/* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
 	I2C_RX_TX_DMA_ACK();
 
-  /* USER CODE END DMA1_Channel1_IRQn 1 */
+	/* USER CODE END DMA1_Channel1_IRQn 1 */
 }
 
 /**
@@ -265,13 +267,13 @@ void DMA1_Channel1_IRQHandler(void)
   */
 void DMA1_Channel2_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
+	/* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
 
-  /* USER CODE END DMA1_Channel2_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_i2c1_tx);
-  /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
-  I2C_RX_TX_DMA_ACK();
-  /* USER CODE END DMA1_Channel2_IRQn 1 */
+	/* USER CODE END DMA1_Channel2_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_i2c1_tx);
+	/* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
+	I2C_RX_TX_DMA_ACK();
+	/* USER CODE END DMA1_Channel2_IRQn 1 */
 }
 
 /**

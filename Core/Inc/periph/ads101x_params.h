@@ -86,7 +86,7 @@ extern "C" {
 /**
  * @brief   ADS101X/111x defaults if not defined for a board or application
  */
-static const ads101x_params_t ads101x_params[] =
+static ads101x_params_t ads101x_params[] =
 {
     ADS101X_PARAMS
 };

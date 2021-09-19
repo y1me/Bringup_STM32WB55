@@ -115,7 +115,8 @@ typedef enum {
     EV_ADS1115_INIT_DONE,
 	EV_ADS1115_MUX_DONE,
 	EV_ADS1115_1ST_CONV_DONE,
-	EV_ADS1115_2ND_CONV_DONE
+	EV_ADS1115_2ND_CONV_DONE,
+	EV_ADS1115_NONE
 } event_ads1115_t;
 
 /* End ADS1115 state machine structures */
@@ -135,7 +136,8 @@ enum {
  * @brief   ADS101x/111x input data
  */
 typedef struct ads101x_data {
-	uint8_t config[3];					/**< data from config register */
+	uint8_t pointer;					/**< data pointer register */
+	uint8_t config[2];					/**< data from/to config register */
 	uint8_t ain0[2];					/**< data from single-ended input AIN0 */
 	uint8_t ain0_prev[2];				/**< previous data from single-ended input AIN0 */
 	uint8_t ain1[2];					/**< data from single-ended input AIN1 */
@@ -189,6 +191,8 @@ typedef struct ads101x_alert {
     void *arg;                        /**< alert callback param */
 } ads101x_alert_t;
 
+void conv_ready( void);
+void Running_ADS115_StateMachine_Iteration(void);
 
 /**
  * @brief   Enable alert interrupt
