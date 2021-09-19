@@ -104,7 +104,7 @@ int ads101x_init(ads101x_params_t *params, ads101x_data_t *data)
 	params->mux_gain = data->config[0];
 	params->mux_gain &= (ADS101X_MUX_MASK | ADS101X_PGA_MASK);
 
-	ret = write_read_I2C_device_DMA(params->i2cHandle, params->addr, data->config, data->config, 3, 2);
+	ret = write_read_I2C_device_DMA(params->i2cHandle, params->addr, &data->pointer, data->config, 3, 2);
 	if (ret == I2C_OK)
 	{
 		params->currState=ST_ADS1115_INIT;
