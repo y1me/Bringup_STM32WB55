@@ -29,7 +29,7 @@ DMA_HandleTypeDef hdma_i2c1_rx;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
 i2cFunctionParam_t i2c_params_data = {
-		NULL,
+		&hi2c1,
 		0,
 		NULL,
 		NULL,
@@ -51,7 +51,7 @@ void I2C_Error(i2cFunctionParam_t * );
 int16_t get_I2C_status(i2cFunctionParam_t *);
 
 
-void StateMachine_Iteration(i2cFunctionParam_t *);
+void I2C_StateMachine_Iteration(i2cFunctionParam_t *);
 /* USER CODE END Private Prototypes */
 
 typedef struct {
@@ -304,10 +304,10 @@ void I2C_RX(i2cFunctionParam_t *Params)
 
 void Running_I2C_StateMachine_Iteration(void)
 {
-	StateMachine_Iteration(&i2c_params_data);
+	I2C_StateMachine_Iteration(&i2c_params_data);
 }
 
-void StateMachine_Iteration(i2cFunctionParam_t *data)
+void I2C_StateMachine_Iteration(i2cFunctionParam_t *data)
 {
 
     // Iterate through the state transition matrix, checking if there is both a match with the current state
@@ -496,6 +496,12 @@ int16_t get_I2C_status(i2cFunctionParam_t *data)
 	}
 
 	if(data->currState == ST_I2C_IDLE && data->event == EV_I2C_NONE)
+	{
+		ret = I2C_FREE;
+		goto out;
+	}
+
+	if(data->currState == ST_I2C_IDLE && data->event == EV_I2C_INIT_DONE)
 	{
 		ret = I2C_FREE;
 		goto out;
