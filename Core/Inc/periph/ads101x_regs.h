@@ -42,9 +42,14 @@ extern "C" {
  *
  * @{
  */
-#define ADS101X_CONF_OS_CONV         (1 << 7)
-#define ADS101X_CONF_COMP_MODE_WIND  (1 << 4)
-#define ADS101X_CONF_COMP_DIS        ((1 << 1) | (1 << 0))
+#define ADS101X_CONF_OS_CONV          (1 << 7)
+#define ADS101X_CONF_COMP_MODE_WIND   (1 << 4)
+#define ADS101X_CONF_COMP_LATCHING    (1 << 2)
+#define ADS101X_CONF_COMP_MASK        ((1 << 1) | (1 << 0))
+#define ADS101X_CONF_COMP_ONE         ((0 << 1) | (0 << 0))
+#define ADS101X_CONF_COMP_TWO         ((0 << 1) | (1 << 0))
+#define ADS101X_CONF_COMP_FOUR        ((1 << 1) | (0 << 0))
+#define ADS101X_CONF_COMP_DIS         ((1 << 1) | (1 << 0))
 /** @} */
 
 /**

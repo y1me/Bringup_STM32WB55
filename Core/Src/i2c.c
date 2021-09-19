@@ -41,7 +41,7 @@ i2cFunctionParam_t i2c_params_data = {
 };
 
 /* USER CODE BEGIN Private Prototypes */
-void MX_I2C1_Init(i2cFunctionParam_t *);
+//void MX_I2C1_Init(i2cFunctionParam_t *);
 void I2C_DMA_TX(i2cFunctionParam_t *);
 void I2C_DMA_RX(i2cFunctionParam_t *);
 void I2C_TX(i2cFunctionParam_t *);

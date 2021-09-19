@@ -50,7 +50,7 @@
 /* Buffer used for transmission */
 uint8_t aTxBuffer[8] = { 0x01,  };
 /* Buffer used for reception */
-uint8_t aRxBuffer[8]= { 0x01, };
+uint8_t aRxBuffer[8]= { 0, 0, 0 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -92,12 +92,13 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  //MX_I2C1_Init();
+  MX_I2C1_Init(&i2c_params_data);
   /* USER CODE BEGIN 2 */
-  while(1);
-  i2c_params_data.i2cHandle = &hi2c1;
+  //while(1);
+  //i2c_params_data.i2cHandle = &hi2c1;
   while (i2c_params_data.event != EV_I2C_INIT_DONE);
   i2c_params_data.bufferTx = aTxBuffer;
+  i2c_params_data.bufferRx = aRxBuffer;
   i2c_params_data.sizeTx = 1;
   i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
@@ -115,14 +116,32 @@ int main(void)
   {
 	  i++;
   }
-  while(1);
+  //while(1);
 
-
-  i2c_params_data.event = EV_I2C_NONE;
+  aTxBuffer[0] = 0x02;
+  aTxBuffer[1] = 0x00;
+  aTxBuffer[2] = 0x00;
+  i2c_params_data.bufferTx = aTxBuffer;
   i2c_params_data.bufferRx = aRxBuffer;
+  i2c_params_data.sizeTx = 3;
   i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
-  i2c_params_data.event = EV_I2C_DMA_RX;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+  i=0;
+  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+    {
+  	  i++;
+    }
+
+  aTxBuffer[0] = 0x03;
+  aTxBuffer[1] = 0x80;
+  aTxBuffer[2] = 0x00;
+  i2c_params_data.bufferTx = aTxBuffer;
+  i2c_params_data.bufferRx = aRxBuffer;
+  i2c_params_data.sizeTx = 3;
+  i2c_params_data.sizeRx = 2;
+  i2c_params_data.address = 0x49;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
   i=0;
   while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
     {
@@ -130,6 +149,19 @@ int main(void)
     }
   while(1)
   {
+	  aTxBuffer[0] = 0x00;
+	  i2c_params_data.bufferTx = aTxBuffer;
+	  i2c_params_data.bufferRx = aRxBuffer;
+	  i2c_params_data.sizeTx = 1;
+	  i2c_params_data.sizeRx = 2;
+	  i2c_params_data.address = 0x49;
+	  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+	  i=0;
+	  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+	    {
+	  	  i++;
+	    }
+	  aTxBuffer[0] = 0x01;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

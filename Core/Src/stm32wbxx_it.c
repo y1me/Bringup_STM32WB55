@@ -211,7 +211,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
 	Running_I2C_StateMachine_Iteration();
-	Running_ADS115_StateMachine_Iteration();
+	//Running_ADS115_StateMachine_Iteration();
 
   /* USER CODE END SysTick_IRQn 1 */
 }
