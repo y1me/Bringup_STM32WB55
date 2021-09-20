@@ -104,6 +104,7 @@ typedef enum {
 	ST_ADS1115_LOW_LIMIT,
 	ST_ADS1115_HIGH_LIMIT,
 	ST_ADS1115_MUX,
+	ST_ADS1115_WAIT_CONV,
 	ST_ADS1115_CONV,
 	ST_ADS1115_ERROR
 } state_ads1115_t;
@@ -118,6 +119,7 @@ typedef enum {
 	EV_ADS1115_LOW_LIMIT_DONE,
 	EV_ADS1115_HIGH_LIMIT_DONE,
 	EV_ADS1115_MUX_DONE,
+	EV_ADS1115_CONV_RDY,
 	EV_ADS1115_CONV_DONE,
 	EV_ADS1115_NONE,
 	EV_ADS1115_ERROR_OCCUR
@@ -143,13 +145,13 @@ typedef struct ads101x_data {
 	uint8_t pointer;					/**< data pointer register */
 	uint8_t config[2];					/**< data from/to config register */
 	uint8_t ain0[2];					/**< data from single-ended input AIN0 */
-	uint8_t ain0_prev[2];				/**< previous data from single-ended input AIN0 */
+	//uint8_t ain0_prev[2];				/**< previous data from single-ended input AIN0 */
 	uint8_t ain1[2];					/**< data from single-ended input AIN1 */
-	uint8_t ain1_prev[2];				/**< previous data from single-ended input AIN1 */
+	//uint8_t ain1_prev[2];				/**< previous data from single-ended input AIN1 */
 	uint8_t ain2[2];					/**< data from single-ended input AIN2 */
-	uint8_t ain2_prev[2];				/**< previous data from single-ended input AIN2 */
+	//uint8_t ain2_prev[2];				/**< previous data from single-ended input AIN2 */
 	uint8_t ain3[2];					/**< data from single-ended input AIN3 */
-	uint8_t ain3_prev[2];				/**< previous data from single-ended input AIN3 */
+	//uint8_t ain3_prev[2];				/**< previous data from single-ended input AIN3 */
 } ads101x_data_t;
 
 
@@ -209,7 +211,7 @@ typedef struct ads101x_alert {
     void *arg;                        /**< alert callback param */
 } ads101x_alert_t;
 
-void conv_ready( void);
+void conv_ready(void);
 void Running_ADS115_StateMachine_Iteration(void);
 
 /**

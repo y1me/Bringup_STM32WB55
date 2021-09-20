@@ -65,6 +65,7 @@ static stateFunctionRow_t ADS1115_stateFunction[] = {
 	{ "ST_ADS1115_LOW_LIMIT",	ads101x_init_low_limit },
 	{ "ST_ADS1115_HIGH_LIMIT",	ads101x_init_high_limit },
     { "ST_ADS1115_MUX",			ads101x_rotate_mux_gain},
+	{ "ST_ADS1115_WAIT_CONV",	NULL },
     { "ST_ADS1115_CONV",		ads101x_read_raw },
     { "ST_ADS1115_ERROR",		ads101x_init }
 };
@@ -79,9 +80,10 @@ static stateTransMatrixRow_t ADS1115_stateTransMatrix[] = {
     // CURR STATE  v// EVENT           // NEXT STATE
     { ST_ADS1115_INIT,			EV_ADS1115_INIT_DONE,			ST_ADS1115_LOW_LIMIT  },
 	{ ST_ADS1115_LOW_LIMIT,		EV_ADS1115_LOW_LIMIT_DONE,		ST_ADS1115_HIGH_LIMIT  },
-	{ ST_ADS1115_HIGH_LIMIT,	EV_ADS1115_HIGH_LIMIT_DONE,		ST_ADS1115_CONV  },
+	{ ST_ADS1115_HIGH_LIMIT,	EV_ADS1115_HIGH_LIMIT_DONE,		ST_ADS1115_WAIT_CONV  },
+    { ST_ADS1115_WAIT_CONV,		EV_ADS1115_CONV_RDY,			ST_ADS1115_CONV },
     { ST_ADS1115_CONV,			EV_ADS1115_CONV_DONE,			ST_ADS1115_MUX },
-	{ ST_ADS1115_MUX,			EV_ADS1115_MUX_DONE,			ST_ADS1115_CONV  },
+	{ ST_ADS1115_MUX,			EV_ADS1115_MUX_DONE,			ST_ADS1115_WAIT_CONV  },
     { ST_ADS1115_INIT,  		EV_ADS1115_DO_INIT,				ST_ADS1115_INIT  },
     { ST_ADS1115_INIT,			EV_ADS1115_ERROR_OCCUR,			ST_ADS1115_INIT  },
     { ST_ADS1115_LOW_LIMIT,		EV_ADS1115_ERROR_OCCUR,			ST_ADS1115_INIT  },
@@ -165,7 +167,9 @@ int ads101x_init_low_limit(ads101x_params_t *params, ads101x_data_t *data)
 int ads101x_init_high_limit(ads101x_params_t *params, ads101x_data_t *data)
 {
 	int ret;
-	uint8_t data_init[3] = ADS101X_INIT_PARAMS;
+	uint8_t data_init[3] = {ADS101X_HIGH_LIMIT_ADDR,
+							0x80,
+							0x00 };
 	if (I2C_status() != I2C_FREE)
 	{
 		ret = ADS101X_I2CBUSY;
@@ -174,8 +178,6 @@ int ads101x_init_high_limit(ads101x_params_t *params, ads101x_data_t *data)
 	data->pointer = data_init[0];
 	data->config[0] = data_init[1];
 	data->config[1] = data_init[2];
-	params->mux_gain = data->config[0];
-	params->mux_gain &= (ADS101X_MUX_MASK | ADS101X_PGA_MASK);
 
 	ret = write_read_I2C_device_DMA(params->i2cHandle, params->addr, &data->pointer, data->config, 3, 2);
 	if (ret == I2C_OK)
@@ -195,12 +197,11 @@ int ads101x_init_high_limit(ads101x_params_t *params, ads101x_data_t *data)
 
 int ads101x_rotate_mux_gain(ads101x_params_t *params, ads101x_data_t *data)
 {
-	data->pointer = ADS101X_CONF_ADDR;
-	uint8_t gain_mux_save;
-	uint8_t data_to_send[3] = {data->pointer,
-						data->config[0],
-						data->config[1]
-						};
+	uint8_t gain_mux_save, data_to_send[3] = ADS101X_INIT_PARAMS;
+	data->pointer = data_to_send[0];
+	data->config[0] = data_to_send[1];
+	data->config[1] = data_to_send[2];
+
 	gain_mux_save = params->mux_gain;
 	int ret;
 	if (I2C_status() != I2C_FREE)
@@ -214,20 +215,17 @@ int ads101x_rotate_mux_gain(ads101x_params_t *params, ads101x_data_t *data)
 		params->mux_gain &= ~(ADS101X_MUX_MASK);
 		params->mux_gain |= ADS101X_AIN1_SINGM;
 	}
-
-	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN1_SINGM)
+	else if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN1_SINGM)
 	{
 		params->mux_gain &= ~(ADS101X_MUX_MASK);
 		params->mux_gain |= ADS101X_AIN2_SINGM;
 	}
-
-	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN2_SINGM)
+	else if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN2_SINGM)
 	{
 		params->mux_gain &= ~(ADS101X_MUX_MASK);
 		params->mux_gain |= ADS101X_AIN3_SINGM;
 	}
-
-	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN3_SINGM)
+	else if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN3_SINGM)
 	{
 		params->mux_gain &= ~(ADS101X_MUX_MASK);
 		params->mux_gain |= ADS101X_AIN0_SINGM;
@@ -252,16 +250,21 @@ int ads101x_rotate_mux_gain(ads101x_params_t *params, ads101x_data_t *data)
 	return ret;
 
 }
-void conv_ready( void)
+
+void conv_ready(void)
 {
-	ads101x_read_raw(ads101x_params,&config_data);
+	if (ads101x_params->currState == ST_ADS1115_WAIT_CONV && ads101x_params->event != EV_ADS1115_CONV_RDY)
+	{
+		ads101x_params->event = EV_ADS1115_CONV_RDY;
+	}
 }
 
 int ads101x_read_raw( ads101x_params_t *params, ads101x_data_t *data)
 {
 	int ret;
-	//uint8_t gain_mux_save;
-	uint8_t *dataRx, address_pointer = ADS101X_CONV_RES_ADDR;
+	data->pointer = ADS101X_CONV_RES_ADDR;
+
+	uint8_t *dataRx;
 	if (I2C_status() != I2C_FREE)
 	{
 		ret = ADS101X_I2CBUSY;
@@ -270,21 +273,21 @@ int ads101x_read_raw( ads101x_params_t *params, ads101x_data_t *data)
 	//gain_mux_save = params->mux_gain;
 	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN0_SINGM)
 	{
-		dataRx = data->ain0;
+		dataRx = data->ain3;
 	}
 	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN1_SINGM)
 	{
-		dataRx = data->ain1;
+		dataRx = data->ain0;
 	}
 	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN2_SINGM)
 	{
-		dataRx = data->ain2;
+		dataRx = data->ain1;
 	}
 	if ((params->mux_gain & ADS101X_MUX_MASK) == ADS101X_AIN3_SINGM)
 	{
-		dataRx = data->ain3;
+		dataRx = data->ain2;
 	}
-	ret = write_read_I2C_device_DMA(params->i2cHandle, params->addr, &address_pointer, dataRx, 1, 2);
+	ret = write_read_I2C_device_DMA(params->i2cHandle, params->addr, &data->pointer, dataRx, 1, 2);
 	if (ret == I2C_OK)
 	{
 		params->currState=ST_ADS1115_CONV;
@@ -406,7 +409,7 @@ void ADS115_StateMachine_Iteration(ads101x_params_t *params, ads101x_data_t *dat
 		}
 
 	}
-	else if (I2C_status() != I2C_FREE)
+	else if (I2C_status() == I2C_ERROR || I2C_status() == I2C_ERR_OCCUR)
 	{
 		params->event = EV_ADS1115_ERROR_OCCUR;
 	}
