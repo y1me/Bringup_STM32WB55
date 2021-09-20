@@ -101,6 +101,8 @@ extern I2C_HandleTypeDef hi2c1;
 /* Begin ADS1115 state machine structures */
 typedef enum {
     ST_ADS1115_INIT,
+	ST_ADS1115_LOW_LIMIT,
+	ST_ADS1115_HIGH_LIMIT,
 	ST_ADS1115_MUX,
 	ST_ADS1115_CONV,
 	ST_ADS1115_ERROR
@@ -113,10 +115,12 @@ typedef enum {
 typedef enum {
 	EV_ADS1115_DO_INIT,
     EV_ADS1115_INIT_DONE,
+	EV_ADS1115_LOW_LIMIT_DONE,
+	EV_ADS1115_HIGH_LIMIT_DONE,
 	EV_ADS1115_MUX_DONE,
-	EV_ADS1115_1ST_CONV_DONE,
-	EV_ADS1115_2ND_CONV_DONE,
-	EV_ADS1115_NONE
+	EV_ADS1115_CONV_DONE,
+	EV_ADS1115_NONE,
+	EV_ADS1115_ERROR_OCCUR
 } event_ads1115_t;
 
 /* End ADS1115 state machine structures */
@@ -148,6 +152,20 @@ typedef struct ads101x_data {
 	uint8_t ain3_prev[2];				/**< previous data from single-ended input AIN3 */
 } ads101x_data_t;
 
+
+typedef union DATA_DISPLAY
+{
+    unsigned char _byte[4];  //For byte access
+
+    struct
+    {
+        unsigned char DataToWrite;
+        unsigned char DataRead;
+        unsigned char DataWrite;
+        unsigned char CSTiming;
+    };
+
+} DATA_DISPLAY;
 /**
  * @brief   ADS101x/111x params
  */

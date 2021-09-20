@@ -96,7 +96,7 @@ enum {
 
 /* USER CODE BEGIN Prototypes */
 
-void MX_I2C1_Init(i2cFunctionParam_t *);
+//void MX_I2C1_Init(i2cFunctionParam_t *);
 void Running_I2C_StateMachine_Iteration(void);
 void I2C_RX_TX_DMA_ACK(void);
 int16_t I2C_status(void);

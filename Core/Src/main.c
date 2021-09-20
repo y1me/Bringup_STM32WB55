@@ -92,9 +92,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_I2C1_Init(&i2c_params_data);
+  //MX_I2C1_Init(&i2c_params_data);
   /* USER CODE BEGIN 2 */
-  //while(1);
+  while(1);
   //i2c_params_data.i2cHandle = &hi2c1;
   while (i2c_params_data.event != EV_I2C_INIT_DONE);
   i2c_params_data.bufferTx = aTxBuffer;
