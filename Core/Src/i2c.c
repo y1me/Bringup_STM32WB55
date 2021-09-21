@@ -309,25 +309,32 @@ void Running_I2C_StateMachine_Iteration(void)
 
 void I2C_StateMachine_Iteration(i2cFunctionParam_t *data)
 {
+	static int count_i2c_stuck;
+	// Iterate through the state transition matrix, checking if there is both a match with the current state
+	// and the event
+	count_i2c_stuck++;
+	if (count_i2c_stuck > 300){
+		data->currState = ST_I2C_INIT;
+		data->event = EV_I2C_ERROR;
+		count_i2c_stuck = 0;
+	}
 
-    // Iterate through the state transition matrix, checking if there is both a match with the current state
-    // and the event
-    for(int i = 0; i < sizeof(I2C_stateTransMatrix)/sizeof(I2C_stateTransMatrix[0]); i++) {
-        if(I2C_stateTransMatrix[i].currState == data->currState) {
-            if(I2C_stateTransMatrix[i].event == data->event) {
+	for(int i = 0; i < sizeof(I2C_stateTransMatrix)/sizeof(I2C_stateTransMatrix[0]); i++) {
+		if(I2C_stateTransMatrix[i].currState == data->currState) {
+			if(I2C_stateTransMatrix[i].event == data->event) {
 
-                // Transition to the next state
-            	data->currState =  I2C_stateTransMatrix[i].nextState;
-
-                // Call the function associated with transition
-            	if ( (I2C_stateFunction[data->currState].func) != NULL )
-            	{
-            		(I2C_stateFunction[data->currState].func)(data);
-            	}
-            	break;
-            }
-        }
-    }
+				// Transition to the next state
+				data->currState =  I2C_stateTransMatrix[i].nextState;
+				count_i2c_stuck = 0;
+				// Call the function associated with transition
+				if ( (I2C_stateFunction[data->currState].func) != NULL )
+				{
+					(I2C_stateFunction[data->currState].func)(data);
+				}
+				break;
+			}
+		}
+	}
 }
 
 void I2C_RX_TX_DMA_ACK(void)
@@ -396,7 +403,7 @@ void I2C_Error(i2cFunctionParam_t *data)
 	{
 		printf("i2c rx error");
 	}
-	//data->event = EV_I2C_NONE;
+	data->event = EV_I2C_NONE;
 }
 
 int16_t read_I2C_device_DMA(I2C_HandleTypeDef *i2cHandle, uint16_t addr, uint8_t *buffer, uint16_t size)

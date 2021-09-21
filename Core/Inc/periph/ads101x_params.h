@@ -62,7 +62,7 @@ extern "C" {
                                   | ADS101X_PGA_FSR_4V096 \
                                   | ADS101X_MODE_CON, \
                                   ADS101X_DATAR_128 \
-                                  | ADS101X_CONF_COMP_TWO \
+                                  | ADS101X_CONF_COMP_FOUR \
 	                              | ADS101X_CONF_COMP_LATCHING }
 #endif
 
