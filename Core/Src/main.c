@@ -19,7 +19,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
+#include "i2c.h"
 #include "gpio.h"
+#include "Utils/Commons.h"
+#include "Utils/types.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -43,7 +47,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+/* Buffer used for transmission */
+uint8_t aTxBuffer[8] = { 0x01,  };
+/* Buffer used for reception */
+uint8_t aRxBuffer[8]= { 0, 0, 0 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,13 +77,9 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
-  /* System interrupt init*/
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
-
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -88,15 +91,77 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
+  //MX_I2C1_Init(&i2c_params_data);
   /* USER CODE BEGIN 2 */
+  while(1);
+  //i2c_params_data.i2cHandle = &hi2c1;
+  while (i2c_params_data.event != EV_I2C_INIT_DONE);
+  i2c_params_data.bufferTx = aTxBuffer;
+  i2c_params_data.bufferRx = aRxBuffer;
+  i2c_params_data.sizeTx = 1;
+  i2c_params_data.sizeRx = 2;
+  i2c_params_data.address = 0x49;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
 
+  //I2C_DMA_TX(&i2c_params_data);
+  //I2C_DMA_RX(&hi2c1, 0x49, aRxBuffer, 3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  printf("Program start \n");
-  while (1)
+  //printf("Program start \n");
+  u32 i = 0;
+  while ( i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
   {
+	  i++;
+  }
+  //while(1);
+
+  aTxBuffer[0] = 0x02;
+  aTxBuffer[1] = 0x00;
+  aTxBuffer[2] = 0x00;
+  i2c_params_data.bufferTx = aTxBuffer;
+  i2c_params_data.bufferRx = aRxBuffer;
+  i2c_params_data.sizeTx = 3;
+  i2c_params_data.sizeRx = 2;
+  i2c_params_data.address = 0x49;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+  i=0;
+  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+    {
+  	  i++;
+    }
+
+  aTxBuffer[0] = 0x03;
+  aTxBuffer[1] = 0x80;
+  aTxBuffer[2] = 0x00;
+  i2c_params_data.bufferTx = aTxBuffer;
+  i2c_params_data.bufferRx = aRxBuffer;
+  i2c_params_data.sizeTx = 3;
+  i2c_params_data.sizeRx = 2;
+  i2c_params_data.address = 0x49;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+  i=0;
+  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+    {
+  	  i++;
+    }
+  while(1)
+  {
+	  aTxBuffer[0] = 0x00;
+	  i2c_params_data.bufferTx = aTxBuffer;
+	  i2c_params_data.bufferRx = aRxBuffer;
+	  i2c_params_data.sizeTx = 1;
+	  i2c_params_data.sizeRx = 2;
+	  i2c_params_data.address = 0x49;
+	  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+	  i=0;
+	  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+	    {
+	  	  i++;
+	    }
+	  aTxBuffer[0] = 0x01;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -156,10 +221,16 @@ void SystemClock_Config(void)
   /* Set APB2 prescaler*/
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
 
-  LL_Init1msTick(64000000);
-
   /* Update CMSIS variable (which can be updated also through SystemCoreClockUpdate function) */
   LL_SetSystemCoreClock(64000000);
+
+   /* Update the time base */
+  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  LL_RCC_ConfigMCO(LL_RCC_MCO1SOURCE_PLLCLK, LL_RCC_MCO1_DIV_1);
+  LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_PCLK1);
   LL_RCC_SetSMPSClockSource(LL_RCC_SMPS_CLKSOURCE_HSI);
   LL_RCC_SetSMPSPrescaler(LL_RCC_SMPS_DIV_1);
   LL_RCC_SetRFWKPClockSource(LL_RCC_RFWKP_CLKSOURCE_NONE);

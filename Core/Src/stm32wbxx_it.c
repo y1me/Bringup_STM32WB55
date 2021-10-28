@@ -24,7 +24,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gpio.h"
+#include "i2c.h"
 #include "stddef.h"
+#include "periph/ads101x.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,14 +60,16 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern DMA_HandleTypeDef hdma_i2c1_rx;
+extern DMA_HandleTypeDef hdma_i2c1_tx;
+extern I2C_HandleTypeDef hi2c1;
 /* USER CODE BEGIN EV */
 static PFV_EXTI pf_ext_int[]=
 		{
 				NULL,
 				NULL,
 				NULL,
-				NULL,
+				conv_ready,
 				NULL,
 				TOGGLE_GPIO_LED2,
 				NULL,
@@ -201,10 +205,13 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-
+	static int8_t count;
   /* USER CODE END SysTick_IRQn 0 */
-
+  HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
+
+	Running_I2C_StateMachine_Iteration();
+	Running_ADS115_StateMachine_Iteration();
 
   /* USER CODE END SysTick_IRQn 1 */
 }
@@ -241,26 +248,32 @@ void EXTI3_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles EXTI line4 interrupt.
+  * @brief This function handles DMA1 channel1 global interrupt.
   */
-void EXTI4_IRQHandler(void)
+void DMA1_Channel1_IRQHandler(void)
 {
-  /* USER CODE BEGIN EXTI4_IRQn 0 */
+	/* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
 
-  /* USER CODE END EXTI4_IRQn 0 */
-  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
-  {
-    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
-    /* USER CODE BEGIN LL_EXTI_LINE_4 */
-		if (pf_ext_int[4]  != NULL)
-		{
-			(* pf_ext_int[4])();
-		}
-    /* USER CODE END LL_EXTI_LINE_4 */
-  }
-  /* USER CODE BEGIN EXTI4_IRQn 1 */
+	/* USER CODE END DMA1_Channel1_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_i2c1_rx);
+	/* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+	I2C_RX_TX_DMA_ACK();
 
-  /* USER CODE END EXTI4_IRQn 1 */
+	/* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel2 global interrupt.
+  */
+void DMA1_Channel2_IRQHandler(void)
+{
+	/* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
+
+	/* USER CODE END DMA1_Channel2_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_i2c1_tx);
+	/* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
+	I2C_RX_TX_DMA_ACK();
+	/* USER CODE END DMA1_Channel2_IRQn 1 */
 }
 
 /**
@@ -301,29 +314,37 @@ void EXTI9_5_IRQHandler(void)
     		}
     /* USER CODE END LL_EXTI_LINE_7 */
   }
-  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_8) != RESET)
-  {
-    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_8);
-    /* USER CODE BEGIN LL_EXTI_LINE_8 */
-    if (pf_ext_int[8]  != NULL)
-    		{
-    			(* pf_ext_int[8])();
-    		}
-    /* USER CODE END LL_EXTI_LINE_8 */
-  }
-  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_9) != RESET)
-  {
-    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_9);
-    /* USER CODE BEGIN LL_EXTI_LINE_9 */
-    if (pf_ext_int[9]  != NULL)
-    		{
-    			(* pf_ext_int[9])();
-    		}
-    /* USER CODE END LL_EXTI_LINE_9 */
-  }
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
   /* USER CODE END EXTI9_5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C1 event interrupt.
+  */
+void I2C1_EV_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C1_EV_IRQn 0 */
+
+  /* USER CODE END I2C1_EV_IRQn 0 */
+  HAL_I2C_EV_IRQHandler(&hi2c1);
+  /* USER CODE BEGIN I2C1_EV_IRQn 1 */
+
+  /* USER CODE END I2C1_EV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C1 error interrupt.
+  */
+void I2C1_ER_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C1_ER_IRQn 0 */
+
+  /* USER CODE END I2C1_ER_IRQn 0 */
+  HAL_I2C_ER_IRQHandler(&hi2c1);
+  /* USER CODE BEGIN I2C1_ER_IRQn 1 */
+
+  /* USER CODE END I2C1_ER_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
