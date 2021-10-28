@@ -44,11 +44,11 @@
 //#define DEV (dev->params.i2c)
 //#define ADDR (dev->params.addr)
 
-int ads101x_init( ads101x_params_t *,  ads101x_data_t *);
-int ads101x_init_low_limit( ads101x_params_t *,  ads101x_data_t *);
-int ads101x_init_high_limit( ads101x_params_t *,  ads101x_data_t *);
-int ads101x_rotate_mux_gain(ads101x_params_t *, ads101x_data_t *);
-int ads101x_read_raw( ads101x_params_t *, ads101x_data_t *);
+int16_t ads101x_init( ads101x_params_t *,  ads101x_data_t *);
+int16_t ads101x_init_low_limit( ads101x_params_t *,  ads101x_data_t *);
+int16_t ads101x_init_high_limit( ads101x_params_t *,  ads101x_data_t *);
+int16_t ads101x_rotate_mux_gain(ads101x_params_t *, ads101x_data_t *);
+int16_t ads101x_read_raw( ads101x_params_t *, ads101x_data_t *);
 
 
 void ADS115_StateMachine_Iteration(ads101x_params_t *, ads101x_data_t *);
@@ -56,7 +56,7 @@ void ADS115_StateMachine_Iteration(ads101x_params_t *, ads101x_data_t *);
 
 typedef struct {
     const char * name;
-    int (* const func)(ads101x_params_t *, ads101x_data_t *);
+    int16_t (* const func)(ads101x_params_t *, ads101x_data_t *);
 } stateFunctionRow_t;
 
 static stateFunctionRow_t ADS1115_stateFunction[] = {
@@ -101,9 +101,9 @@ uint8_t aRxBuffer[ADS101X_BUFFER_SIZE];
 
 ads101x_data_t config_data;
 
-int ads101x_init(ads101x_params_t *params, ads101x_data_t *data)
+int16_t ads101x_init(ads101x_params_t *params, ads101x_data_t *data)
 {
-	int ret;
+	int16_t ret;
 	uint8_t data_init[3] = ADS101X_INIT_PARAMS;
 	if (I2C_status() != I2C_FREE)
 	{
@@ -133,9 +133,9 @@ int ads101x_init(ads101x_params_t *params, ads101x_data_t *data)
 }
 
 
-int ads101x_init_low_limit(ads101x_params_t *params, ads101x_data_t *data)
+int16_t ads101x_init_low_limit(ads101x_params_t *params, ads101x_data_t *data)
 {
-	int ret;
+	int16_t ret;
 	uint8_t data_init[3] = {ADS101X_LOW_LIMIT_ADDR,
 							0x00,
 							0x00 };
@@ -165,9 +165,9 @@ int ads101x_init_low_limit(ads101x_params_t *params, ads101x_data_t *data)
 
 }
 
-int ads101x_init_high_limit(ads101x_params_t *params, ads101x_data_t *data)
+int16_t ads101x_init_high_limit(ads101x_params_t *params, ads101x_data_t *data)
 {
-	int ret;
+	int16_t ret;
 	uint8_t data_init[3] = {ADS101X_HIGH_LIMIT_ADDR,
 							0x80,
 							0x00 };
@@ -196,7 +196,7 @@ int ads101x_init_high_limit(ads101x_params_t *params, ads101x_data_t *data)
 
 }
 
-int ads101x_rotate_mux_gain(ads101x_params_t *params, ads101x_data_t *data)
+int16_t ads101x_rotate_mux_gain(ads101x_params_t *params, ads101x_data_t *data)
 {
 	uint8_t gain_mux_save, data_to_send[3] = ADS101X_INIT_PARAMS;
 	data->pointer = data_to_send[0];
@@ -204,7 +204,7 @@ int ads101x_rotate_mux_gain(ads101x_params_t *params, ads101x_data_t *data)
 	data->config[1] = data_to_send[2];
 
 	gain_mux_save = params->mux_gain;
-	int ret;
+	int16_t ret;
 	if (I2C_status() != I2C_FREE)
 	{
 		ret = ADS101X_I2CBUSY;
@@ -254,7 +254,7 @@ int ads101x_rotate_mux_gain(ads101x_params_t *params, ads101x_data_t *data)
 
 void conv_ready(void)
 {
-	static int count;
+	static int16_t count;
 	if (count > 1)
 	{
 		if (ads101x_params->currState == ST_ADS1115_WAIT_CONV && ads101x_params->event != EV_ADS1115_CONV_RDY)
@@ -266,9 +266,9 @@ void conv_ready(void)
 	count++;
 }
 
-int ads101x_read_raw( ads101x_params_t *params, ads101x_data_t *data)
+int16_t ads101x_read_raw( ads101x_params_t *params, ads101x_data_t *data)
 {
-	int ret;
+	int16_t ret;
 	data->pointer = ADS101X_CONV_RES_ADDR;
 
 	uint8_t *dataRx;
@@ -310,7 +310,7 @@ int ads101x_read_raw( ads101x_params_t *params, ads101x_data_t *data)
 	return ret;
 }
 
-int ads101x_enable_alert(ads101x_alert_t *dev,
+int16_t ads101x_enable_alert(ads101x_alert_t *dev,
                          ads101x_alert_cb_t cb, void *arg)
 {
 	/*
@@ -341,7 +341,7 @@ int ads101x_enable_alert(ads101x_alert_t *dev,
     return ADS101X_OK;
 }
 
-int ads101x_set_alert_parameters(const ads101x_alert_t *dev,
+int16_t ads101x_set_alert_parameters(const ads101x_alert_t *dev,
                                  int16_t low_limit, int16_t high_limit)
 {
 	/*
@@ -423,7 +423,7 @@ void ADS115_StateMachine_Iteration(ads101x_params_t *params, ads101x_data_t *dat
 
     // Iterate through the state transition matrix, checking if there is both a match with the current state
     // and the event
-    for(int i = 0; i < sizeof(ADS1115_stateTransMatrix)/sizeof(ADS1115_stateTransMatrix[0]); i++) {
+    for(int16_t i = 0; i < sizeof(ADS1115_stateTransMatrix)/sizeof(ADS1115_stateTransMatrix[0]); i++) {
         if(ADS1115_stateTransMatrix[i].currState == params->currState) {
             if(ADS1115_stateTransMatrix[i].event == params->event) {
 

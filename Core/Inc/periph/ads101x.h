@@ -155,7 +155,7 @@ typedef struct ads101x_data {
 } ads101x_data_t;
 
 
-typedef union DATA_DISPLAY
+/*typedef union DATA_DISPLAY
 {
     unsigned char _byte[4];  //For byte access
 
@@ -167,7 +167,7 @@ typedef union DATA_DISPLAY
         unsigned char CSTiming;
     };
 
-} DATA_DISPLAY;
+} DATA_DISPLAY;*/
 /**
  * @brief   ADS101x/111x params
  */
@@ -225,7 +225,7 @@ void Running_ADS115_StateMachine_Iteration(void);
  *
  * @return zero on success, non zero on error
  */
-int ads101x_enable_alert(ads101x_alert_t *dev,
+int16_t ads101x_enable_alert(ads101x_alert_t *dev,
                          ads101x_alert_cb_t cb, void *arg);
 
 /**
@@ -239,7 +239,7 @@ int ads101x_enable_alert(ads101x_alert_t *dev,
  *
  * @return zero on success, non zero on error
  */
-int ads101x_set_alert_parameters(const ads101x_alert_t *dev,
+int16_t ads101x_set_alert_parameters(const ads101x_alert_t *dev,
                                  int16_t low_limit, int16_t high_limit);
 
 #ifdef __cplusplus
